@@ -13,11 +13,11 @@
 
     <title>
         
-          RegEx in Visual Studio - Sharing Some Bits | VR&#39;s Blog
+          FSharpMentoringFirstWeek - Sharing Some Bits | VR&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/08/19/vs-regex/">
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/10/02/FSharpMentoringFirstWeek/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -148,7 +148,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('vs.png')
+        background-image: url('/img/home-bg-o.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -158,16 +158,12 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#VisualStdio" title="VisualStdio">VisualStdio</a>
-                        
-                          <a class="tag" href="/tags/#RegEx" title="RegEx">RegEx</a>
-                        
                     </div>
-                    <h1>RegEx in Visual Studio</h1>
-                    <h2 class="subheading"> &quot;Swap parameters in Visual Studio using regular rxpression.&quot;</h2>
+                    <h1>FSharpMentoringFirstWeek</h1>
+                    <h2 class="subheading">undefined</h2>
                     <span class="meta">
                         Posted by Nithin VR on
-                        2017-08-19
+                        2017-10-02
                     </span>
                 </div>
             </div>
@@ -186,28 +182,7 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="Swap-parameters-using-regular-expression"><a href="#Swap-parameters-using-regular-expression" class="headerlink" title="Swap parameters using regular expression"></a>Swap parameters using regular expression</h2><p>This issue is occurred to me many times while sending review request, for example when I use Assert.AreEqual() method and the parameters are not in the order ( expected value, actual value) is got swapped. It’s boring and long vexing job to correct all the Assert.AreEqual() parameter order. While searching on Internet found this easy way to swap the parameters using Regular Expression.<br><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AreEqual</span>(<span class="params"><span class="keyword">object</span> expected,<span class="keyword">object</span> actual</span>)</span></div></pre></td></tr></table></figure></p>
-<p>For example, I wrote code like :<br><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line">Assert.AreEqual(<span class="string">"ActualString1"</span>, CretedString1);  </div><div class="line">Assert.AreEqual(<span class="string">"ActualString2"</span>, CretedString2);  </div><div class="line">Assert.AreEqual(<span class="string">"ActualString3"</span>, CretedString3);</div></pre></td></tr></table></figure></p>
-<p>The parameter is reversed order, it’s not right and For sure I will get a review comment to change this. To swap this parameter we can use find and replace with regular expression.<br><blockquote><p>Note : Regular Expression in Visual Studio is bit different.</p>
-</blockquote></p>
-<h5 id="Add-this-as-Search-Term"><a href="#Add-this-as-Search-Term" class="headerlink" title="Add this as Search Term"></a>Add this as Search Term</h5><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line">\((<span class="string">".*"</span>),([^\)]*)</div></pre></td></tr></table></figure>
-<h5 id="Add-this-as-Replace-Term"><a href="#Add-this-as-Replace-Term" class="headerlink" title="Add this as Replace Term"></a>Add this as Replace Term</h5><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line">($<span class="number">2</span>, $<span class="number">1</span></div></pre></td></tr></table></figure>
-<h5 id="How-its-works"><a href="#How-its-works" class="headerlink" title="How its works"></a>How its works</h5><p><img src="/2017/08/19/vs-regex/RegEx.png" alt="alt text" title="How RegEx works."><br>For information about regular expressions that are used in replacement patterns, see <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/substitutions-in-regular-expressions" target="_blank" rel="external">Substitutions in Regular Expressions</a>. To use a numbered capture group, the syntax is $2 to specify the numbered group and (x) to specify the group in question.<br>For example, the grouped regular expression (\d)([a-z]) finds four matches in the following string: 1a 2b 3c 4d.<br>The replacement string z$1 converts that string to z1 z2 z3 z4.</p>
-<h5 id="Example-Screenshots"><a href="#Example-Screenshots" class="headerlink" title="Example Screenshots"></a>Example Screenshots</h5><p>Before :<br><img src="/2017/08/19/vs-regex/before.png" alt="alt text" title="Before changes."></p>
-<p>After :<br><img src="/2017/08/19/vs-regex/after.png" alt="alt text" title="After changes."></p>
-<ul>
-<li>Be careful to select code part you want to swap parameter.Dont apply for whole Document or Solution, It might do some harmfull effects.</li>
-<li>You can tweak the RegX for other use cases where parameter pattern is different.</li>
-<li>There exist some shortcuts to reorder the parameter in VS but ii didn’t work for me and even if it work, We need to select each AreEqual method and apply those shortcut.</li>
-</ul>
-<h5 id="More-Reference"><a href="#More-Reference" class="headerlink" title="More Reference:"></a>More Reference:</h5><blockquote>
-<ul>
-<li><a href="https://msdn.microsoft.com/en-us/library/2k3te2cs.aspx" target="_blank" rel="external">Using Regular Expressions in Visual Studio</a></li>
-<li><a href="https://msdn.microsoft.com/en-us/library/ms243413.aspx" target="_blank" rel="external">Assert.AreEqual Method (Object, Object) (Microsoft.VisualStudio.TestTools.UnitTesting)</a></li>
-<li><a href="https://stackoverflow.com/questions/3292292/is-there-a-shortcut-to-swap-reorder-parameters-in-visual-studio-ide" target="_blank" rel="external">shortcut to swap/reorder parameters in vs?</a></li>
-</ul>
-</blockquote>
-
+                
 
                 <hr>
 
@@ -215,13 +190,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2017/10/02/FSharpDotNetAndMac/" data-toggle="tooltip" data-placement="top" title="F# in Mac OS.">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2017/08/13/UnBlockDllExtension/" data-toggle="tooltip" data-placement="top" title="Unblock Dll Extension">Next Post &rarr;</a>
+                            <a href="/2017/10/02/FSharpDotNetAndMac/" data-toggle="tooltip" data-placement="top" title="F# in Mac OS.">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -239,20 +210,6 @@
             </div>
     <!-- Side Catalog Container -->
         
-            <div class="
-                col-lg-2 col-lg-offset-0
-                visible-lg-block
-                sidebar-container
-                catalog-container">
-                <div class="side-catalog">
-                    <hr class="hidden-sm hidden-xs">
-                    <h5>
-                        <a class="catalog-toggle" href="#">CATALOG</a>
-                    </h5>
-                    <ul class="catalog-body"></ul>
-                </div>
-            </div>
-        
 
     <!-- Sidebar Container -->
 
@@ -268,10 +225,6 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#VisualStdio" title="VisualStdio">VisualStdio</a>
-                        
-                          <a class="tag" href="/tags/#RegEx" title="RegEx">RegEx</a>
-                        
                     </div>
                 </section>
                 
@@ -291,8 +244,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "vrnithinkumar";
-    var disqus_identifier = "http://vrnithinkumar.github.io/2017/08/19/vs-regex/";
-    var disqus_url = "http://vrnithinkumar.github.io/2017/08/19/vs-regex/";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2017/10/02/FSharpMentoringFirstWeek/";
+    var disqus_url = "http://vrnithinkumar.github.io/2017/10/02/FSharpMentoringFirstWeek/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -489,50 +442,6 @@
 
 
 <!-- Side Catalog -->
-
-<script type="text/javascript">
-    function generateCatalog (selector) {
-        var P = $('div.post-container'),a,n,t,l,i,c;
-        a = P.find('h1,h2,h3,h4,h5,h6');
-        a.each(function () {
-            n = $(this).prop('tagName').toLowerCase();
-            i = "#"+$(this).prop('id');
-            t = $(this).text();
-            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
-            l = $('<li class="'+n+'_nav"></li>').append(c);
-            $(selector).append(l);
-        });
-        return true;    
-    }
-
-    generateCatalog(".catalog-body");
-
-    // toggle side catalog
-    $(".catalog-toggle").click((function(e){
-        e.preventDefault();
-        $('.side-catalog').toggleClass("fold")
-    }))
-
-    /*
-     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
-     * Fork by Hux to support padding
-     */
-    async("/js/jquery.nav.js", function () {
-        $('.catalog-body').onePageNav({
-            currentClass: "active",
-            changeHash: !1,
-            easing: "swing",
-            filter: "",
-            scrollSpeed: 700,
-            scrollOffset: 0,
-            scrollThreshold: .2,
-            begin: null,
-            end: null,
-            scrollChange: null,
-            padding: 80
-        });
-    });
-</script>
 
 
 
