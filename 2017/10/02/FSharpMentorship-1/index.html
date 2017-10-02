@@ -13,11 +13,11 @@
 
     <title>
         
-          F# in Mac OS. - Sharing Some Bits | VR&#39;s Blog
+          F# Mentorship Program : Week-1 - Sharing Some Bits | VR&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/10/02/FSharpDotNetAndMac/">
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/10/02/FSharpMentorship-1/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -148,7 +148,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('fsharporg.png')
+        background-image: url('FSharpInViolate.png')
     }
 </style>
 <header class="intro-header" >
@@ -160,13 +160,9 @@
                         
                           <a class="tag" href="/tags/#F#" title="F#">F#</a>
                         
-                          <a class="tag" href="/tags/#Mac" title="Mac">Mac</a>
-                        
-                          <a class="tag" href="/tags/#.NET Core" title=".NET Core">.NET Core</a>
-                        
                     </div>
-                    <h1>F# in Mac OS.</h1>
-                    <h2 class="subheading"> &quot;Setting up F# with .NET Core, VSCode and Ionide.&quot;</h2>
+                    <h1>F# Mentorship Program : Week-1</h1>
+                    <h2 class="subheading"> &quot;F# Software Foundation’s Mentorship Program.&quot;</h2>
                     <span class="meta">
                         Posted by Nithin VR on
                         2017-10-02
@@ -188,22 +184,33 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="Introduction-to-F-in-Mac-OS"><a href="#Introduction-to-F-in-Mac-OS" class="headerlink" title="Introduction to F# in Mac OS"></a>Introduction to F# in Mac OS</h1><p>In short we will be setting up in the below order.</p>
+                <h1 id="F-Software-Foundation’s-Mentorship-Program"><a href="#F-Software-Foundation’s-Mentorship-Program" class="headerlink" title="F# Software Foundation’s Mentorship Program"></a>F# Software Foundation’s Mentorship Program</h1><p>It is my pleasure to share that I have got selected in <a href="http://fsharp.org/mentorship/about.html" target="_blank" rel="external">F# Software Foundation’s Mentorship</a> Program. I got a great mentor, Oleg Golovin. As per the discussion we decided to meet one hour in every weekend using Skype. For the first 30 minutes will to clearing my doubts regarding F# and next 30 minutes will be used to do solving challenges in HackerRank via pair programming. I am totally excited about this. Hoping I will fully utilize this opportunity.<br>First week meet up held on 10-Sep-2017, we had a Skype call. We started off with a general introduction to F#. I discussed about how I am learning F# now and which all materials I am following. Oleg suggested me to refer the <a href="https://fsharpforfunandprofit.com" target="_blank" rel="external">F# for fun and profit</a> web site and suggested on practicing more questions from the <a href="https://www.hackerrank.com/domains/fp/intro" target="_blank" rel="external">HackerRank Functional Programming</a>.<br><strong>My setup:</strong> Mac OS X, VS Code, Ionide.</p>
+<h3 id="New-concepts-I-learned"><a href="#New-concepts-I-learned" class="headerlink" title="New concepts I learned"></a>New concepts I learned</h3><ul>
+<li><p><strong>map</strong><br>map method on a list, will apply the passing function to each element and create a new list. <code>map</code> is supported with Array, List, Seq , etc.</p>
+<figure class="highlight fsharp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> list1 = [<span class="number">1</span>; <span class="number">2</span>; <span class="number">3</span>; <span class="number">4</span>; <span class="number">5</span>; <span class="number">6</span>; <span class="number">7</span>; <span class="number">8</span>; <span class="number">9</span>; <span class="number">10</span>]</div><div class="line"><span class="keyword">let</span> list2 = </div><div class="line">    list1 </div><div class="line">    |&gt; List.map (<span class="keyword">fun</span> x -&gt; x * <span class="number">2</span>)</div><div class="line"><span class="comment">// list2 = [2; 4; 6; 8; 10; 12; 14; 16; 18; 20]</span></div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>fold</strong><br>A “fold” operation applies given function to each element in a list and pass around the accumulator which is initialized. Returns the accumulator as the result of the fold operation. <code>fold</code> is supported with Array, List, Seq, Set and Map.</p>
+<figure class="highlight fsharp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> list1 = [<span class="number">1</span>; <span class="number">2</span>; <span class="number">3</span>; <span class="number">4</span>; <span class="number">5</span>; <span class="number">6</span>; <span class="number">7</span>; <span class="number">8</span>; <span class="number">9</span>; <span class="number">10</span>]</div><div class="line"><span class="keyword">let</span> sum =</div><div class="line">    list1</div><div class="line">    |&gt; List.fold (<span class="keyword">fun</span> elmnt sum -&gt; elmnt + sum) <span class="number">0</span> <span class="comment">// we are initializing</span></div><div class="line"><span class="comment">// return value of the function will be passed as accumulator(sum) in next iteration.</span></div><div class="line"><span class="comment">// sum = 55</span></div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>How calling function is different</strong></p>
+<figure class="highlight fsharp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> foo() =</div><div class="line">    printfn <span class="string">"Hello world"</span></div><div class="line">foo   <span class="comment">// this won't call the foo it will return the function</span></div><div class="line">foo() <span class="comment">// this will call the actual foo since we are passing `()` unit type</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>In F# every function accept a single parameter we have to pass the unit type <code>()</code> even if the function accepts nothing. </p>
 <ul>
-<li>Install .NET Core.</li>
-<li>Install VS Code.</li>
-<li>Install Ionide.<h3 id="Installing-NET-Core"><a href="#Installing-NET-Core" class="headerlink" title="Installing .NET Core"></a>Installing .NET Core</h3>Download and install .NET Core SDK from <a href="https://www.microsoft.com/net/core#macos" target="_blank" rel="external">.NET Core for Mac</a>. <h3 id="Installing-VS-Code"><a href="#Installing-VS-Code" class="headerlink" title="Installing VS Code"></a>Installing VS Code</h3><a href="https://code.visualstudio.com" target="_blank" rel="external">Download Visual Studio Code</a> for Mac and Install.<h3 id="Installing-Ionide"><a href="#Installing-Ionide" class="headerlink" title="Installing Ionide"></a>Installing Ionide</h3>Ionide is a plugin to support F# language features for VS Code. Open VS Code, press <code>Cmd+P</code> and enter the  command <code>ext install Ionide-fsharp</code> to install the Ionide package.<br>Or search ionide in VS Code extensions and install from there.<h3 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h3></li>
+<li><strong>unit type</strong><br>unit type means absence of any values. It is just a placeholder to use the when no value is available or required. Its value is <code>()</code>. For example functions like printf will return nothing but a unit type. TLDR : F# unit = C# void<h3 id="Here-are-the-few-questions-we-discussed"><a href="#Here-are-the-few-questions-we-discussed" class="headerlink" title="Here are the few questions we discussed."></a>Here are the few questions we discussed.</h3></li>
 </ul>
 <ol>
-<li><strong>Create a solution to have multiple projects.</strong><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">dotnet new sln --name Everything</div></pre></td></tr></table></figure>
-If we did not specify  the <code>--name</code> it will take the folder name as the solution name.</li>
-<li><strong>Create F# console project and add it to the solution.</strong><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">dotnet new console -lang f# -o hwFSharpApp</div></pre></td></tr></table></figure>
-In above command <code>-o hwFSharpApp</code> sets an output directory of hwFSharpApp and creates hwFSharpApp.fsproj. <code>console -lang F#</code> will create a console app in F# language.<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">dotnet sln add hwFSharpApp/hwFSharpApp.fsproj </div></pre></td></tr></table></figure>
-This will add project <code>hwFSharpApp/hwFSharpApp.fsproj</code> to the solution.</li>
-<li><strong>Build and run.</strong><br>The below command will build the solution with all the projects. <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">dotnet build Everything.sln </div></pre></td></tr></table></figure>
-To run the console application use the below command with <code>dotnet run</code> which specifies the projects to run.<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">dotnet run --project hwFSharpApp/hwFSharpApp.fsproj </div></pre></td></tr></table></figure>
-<img src="/2017/10/02/FSharpDotNetAndMac/run_app.png" alt="alt text" title="Running .NET project"></li>
-<li><strong>Use VS Code to edit.</strong><br>Using VS Code open the folder with solution(Everything.sln) we created. We can use the F# Project Explorer to Build Run and Debug the F# Projects by setting it as startup project.<br><img src="/2017/10/02/FSharpDotNetAndMac/VSCode.png" alt="alt text" title="VS Code with loaded solution."><br>Use <code>--help</code> to explore more options in .NET CLI. <h3 id="More-Details"><a href="#More-Details" class="headerlink" title="More Details"></a>More Details</h3>1) <a href="http://fsharp.org/use/mac/" target="_blank" rel="external">Use F# on Mac OSX</a><br>2) <a href="https://channel9.msdn.com/Events/dotnetConf/2017/T318" target="_blank" rel="external">Get started with F# and .NET Core</a></li>
+<li><p><em>Type representation is little confusing, like tuple is (a, b) but in type highlighter will show it as a </em> b , Is there a good place look for more details to understand about this type representation?<em><br>I think this is done in part to avoid confusion with multi-argument generics like ‘Dictionary<string, int="">‘. Imagine that dictionary values is tuples of two integers ‘(int, int)’. So, ‘Dictionary<string, int,="" int="">‘? ‘Dictionary<string, (int,="" int)="">‘? To me, ‘Dictionary&lt;string, int </string,></string,></string,></em> int&gt;’ is cleaner, because ‘*’ is easily recognized as tuple mark, where for ‘()’ you have to look more carefully into type definition.</p>
+</li>
+<li><p><em>Why do we need to explicitly specify a function is recursive using rec?</em><br>There is excellent answer here: <a href="https://stackoverflow.com/questions/900585/why-are-functions-in-ocaml-f-not-recursive-by-default" target="_blank" rel="external">Stack Overflow</a> Basically, that’s just historical choice.</p>
+</li>
+<li><p><em>Won’t the immutability cause to use more memory, since every time we create a new change we are creating a new object/value?</em><br>Yes, immutability would cause to use a lot more memory… if you are careless with collections and object passing. Also, FSharp structures is heavily optimized. So, for example, when you add new element to the list, it doesn’t create new copy of a list with all copies of its elements. FSharp just creates one new list element, marks it as head for ‘new’ list, and attaches old list as tail. Arrays are not that way, they actually copy all of their contents.</p>
+</li>
+<li><p><em>I read some where using mutable variable is not a functional way, in F# do we always try or prefer to not use mutable variables?</em><br>It’s better when your function always returns the same result with the same inputs. But if we declare and use mutable variable somewhere inside that function - the ‘same result’ guarantee is lower. If we use mutable variable that’s declared elsewhere - there’s no guarantee, that some other function hasn’t changed it, so we wouldn’t get ‘same result’. Of course going strict ‘no mutables’ is not a good way. I find it preferable to not use public mutables - when you absolutely need to have some state that changes over time on long-living entity, it’s totally okay to use private mutable.</p>
+</li>
+<li><p><em>Why arrays are mutable while lists are not?</em><br>Array in F# has the same base as in C# - System.Array. So, naturally, they behave the same as in C#. Lists, on the other hand, is immutable special ‘FSharpList’. When you add an element, you actually create new list as I described above. If you try to mutate the element in the list - the head that previously was pointing to that element is now pointing into corrupted memory, because the list is singly-linked. You change the element - and the tail gets disconnected from former head.</p>
+</li>
 </ol>
 
 
@@ -213,13 +220,9 @@ To run the console application use the below command with <code>dotnet run</code
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2017/10/02/FSharpMentorship-1/" data-toggle="tooltip" data-placement="top" title="F# Mentorship Program : Week-1">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2017/08/19/vs-regex/" data-toggle="tooltip" data-placement="top" title="RegEx in Visual Studio">Next Post &rarr;</a>
+                            <a href="/2017/10/02/FSharpDotNetAndMac/" data-toggle="tooltip" data-placement="top" title="F# in Mac OS.">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -268,10 +271,6 @@ To run the console application use the below command with <code>dotnet run</code
                        
                           <a class="tag" href="/tags/#F#" title="F#">F#</a>
                         
-                          <a class="tag" href="/tags/#Mac" title="Mac">Mac</a>
-                        
-                          <a class="tag" href="/tags/#.NET Core" title=".NET Core">.NET Core</a>
-                        
                     </div>
                 </section>
                 
@@ -291,8 +290,8 @@ To run the console application use the below command with <code>dotnet run</code
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "vrnithinkumar";
-    var disqus_identifier = "http://vrnithinkumar.github.io/2017/10/02/FSharpDotNetAndMac/";
-    var disqus_url = "http://vrnithinkumar.github.io/2017/10/02/FSharpDotNetAndMac/";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2017/10/02/FSharpMentorship-1/";
+    var disqus_url = "http://vrnithinkumar.github.io/2017/10/02/FSharpMentorship-1/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
