@@ -1,2 +1,2 @@
-# vrnithinkumar.github.com
-Private Blog created using Hexo static site generator.
+# Hexo_Static_Site
+Generating static code for My Blog http://vrnithinkumar.github.io/
