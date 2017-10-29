@@ -13,11 +13,11 @@
 
     <title>
         
-          RegEx in Visual Studio - Sharing Some Bits | VR&#39;s Blog
+          Git Basic Commands - Sharing Some Bits | VR&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/08/19/vs-regex/">
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/08/21/Git-Basic-Commands/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -148,7 +148,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('vs.png')
+        background-image: url('git.png')
     }
 </style>
 <header class="intro-header" >
@@ -158,16 +158,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#VisualStdio" title="VisualStdio">VisualStdio</a>
-                        
-                          <a class="tag" href="/tags/#RegEx" title="RegEx">RegEx</a>
+                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
                         
                     </div>
-                    <h1>RegEx in Visual Studio</h1>
-                    <h2 class="subheading"> &quot;Swap parameters in Visual Studio using regular rxpression.&quot;</h2>
+                    <h1>Git Basic Commands</h1>
+                    <h2 class="subheading"> &quot;Enough basics to get started with Git.&quot;</h2>
                     <span class="meta">
                         Posted by Nithin VR on
-                        2017-08-19
+                        2017-08-21
                     </span>
                 </div>
             </div>
@@ -186,27 +184,22 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="Swap-parameters-using-regular-expression"><a href="#Swap-parameters-using-regular-expression" class="headerlink" title="Swap parameters using regular expression"></a>Swap parameters using regular expression</h2><p>This issue is occurred to me many times while sending review request, for example when I use Assert.AreEqual() method and the parameters are not in the order ( expected value, actual value) is got swapped. It’s boring and long vexing job to correct all the Assert.AreEqual() parameter order. While searching on Internet found this easy way to swap the parameters using Regular Expression.<br><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">AreEqual</span>(<span class="params"><span class="keyword">object</span> expected,<span class="keyword">object</span> actual</span>)</span></div></pre></td></tr></table></figure></p>
-<p>For example, I wrote code like :<br><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line">Assert.AreEqual(<span class="string">"ActualString1"</span>, CretedString1);  </div><div class="line">Assert.AreEqual(<span class="string">"ActualString2"</span>, CretedString2);  </div><div class="line">Assert.AreEqual(<span class="string">"ActualString3"</span>, CretedString3);</div></pre></td></tr></table></figure></p>
-<p>The parameter is reversed order, it’s not right and For sure I will get a review comment to change this. To swap this parameter we can use find and replace with regular expression.<br><blockquote><p>Note : Regular Expression in Visual Studio is bit different.</p>
-</blockquote></p>
-<h5 id="Add-this-as-Search-Term"><a href="#Add-this-as-Search-Term" class="headerlink" title="Add this as Search Term"></a>Add this as Search Term</h5><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line">\((<span class="string">".*"</span>),([^\)]*)</div></pre></td></tr></table></figure>
-<h5 id="Add-this-as-Replace-Term"><a href="#Add-this-as-Replace-Term" class="headerlink" title="Add this as Replace Term"></a>Add this as Replace Term</h5><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line">($<span class="number">2</span>, $<span class="number">1</span></div></pre></td></tr></table></figure>
-<h5 id="How-its-works"><a href="#How-its-works" class="headerlink" title="How its works"></a>How its works</h5><p><img src="/2017/08/19/vs-regex/RegEx.png" alt="alt text" title="How RegEx works."><br>For information about regular expressions that are used in replacement patterns, see <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/substitutions-in-regular-expressions" target="_blank" rel="external">Substitutions in Regular Expressions</a>. To use a numbered capture group, the syntax is $2 to specify the numbered group and (x) to specify the group in question.<br>For example, the grouped regular expression (\d)([a-z]) finds four matches in the following string: 1a 2b 3c 4d.<br>The replacement string z$1 converts that string to z1 z2 z3 z4.</p>
-<h5 id="Example-Screenshots"><a href="#Example-Screenshots" class="headerlink" title="Example Screenshots"></a>Example Screenshots</h5><p>Before :<br><img src="/2017/08/19/vs-regex/before.png" alt="alt text" title="Before changes."></p>
-<p>After :<br><img src="/2017/08/19/vs-regex/after.png" alt="alt text" title="After changes."></p>
-<ul>
-<li>Be careful to select code part you want to swap parameter.Dont apply for whole Document or Solution, It might do some harmfull effects.</li>
-<li>You can tweak the RegX for other use cases where parameter pattern is different.</li>
-<li>There exist some shortcuts to reorder the parameter in VS but ii didn’t work for me and even if it work, We need to select each AreEqual method and apply those shortcut.</li>
+                <h2 id="Introduction-to-Git"><a href="#Introduction-to-Git" class="headerlink" title="Introduction to Git"></a>Introduction to Git</h2><p><a href="https://git-scm.com/" target="_blank" rel="external">Git</a>, a version control created by <a href="https://en.wikipedia.org/wiki/Linus_Torvalds" target="_blank" rel="external">Linus</a>, creator of Linux. It was created for managing contributions to linux code base. This post is covering some of the basic commands which used regularly.</p>
+<h5 id="Git-Terms"><a href="#Git-Terms" class="headerlink" title="Git Terms"></a>Git Terms</h5><p><strong>Remote</strong> : A remote repository is hosted in internet and we keep our project copy there. It will act as a center repository for the project and different local repositories will push code to the remote.<br><code>$ git remote</code> - to list all the remotes.<br><strong>Upstream</strong> : It is used to refer the original repository we used to fork. While we fork a repository, it will not set the upstream by default. We must configure a upstream repository in Git to sync changes made in the original repository.</p>
+<h5 id="Git-Work-Flow"><a href="#Git-Work-Flow" class="headerlink" title="Git Work Flow"></a>Git Work Flow</h5><ul>
+<li>Forking the repository<br>In the top-right corner of the page, click Fork. Clicking on the fork button from project page will create a forked project under your account.</li>
+<li>Cloning the forked repository<br><code>$ git clone https://github.com/user/awesome.git</code></li>
+<li>Setting up upstream<br><code>$ git remote add upstream https://github.com/original_author/awesome.git</code><br>After setting up the upstream, we can sync the upstream to get changes made in the original repository.</li>
+<li>Creating a new branch<br><code>$ git checkout-b MyNewBranch</code></li>
+<li>Committing changes to the new branch<br><code>$ git push origin MyNewBranch</code></li>
+<li>Deleting the branch after merging<br><code>$ git branch -D MyNewBranch</code> - This will delete the branch even if we did not merge or rebase it.</li>
+<li>Pruning all branches<br><code>$ git remote prune origin</code></li>
+<li>Fetching changes from the upstream<br>To get the latest changes made in the original repository, we can fetch it from upstream.<br><code>$ git fetch upstream</code></li>
+<li>Merging our master with upstream<br><code>$ git merge upstream/master</code><h5 id="More-Reference"><a href="#More-Reference" class="headerlink" title="More Reference:"></a>More Reference:</h5></li>
+<li><a href="https://help.github.com/articles/fork-a-repo/" target="_blank" rel="external">Fork a repository</a></li>
+<li><a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" target="_blank" rel="external">Add upstream</a></li>
+<li><a href="https://stackoverflow.com/questions/3184555/cleaning-up-old-remote-git-branches" target="_blank" rel="external">Cleaning up old remote branches</a></li>
 </ul>
-<h5 id="More-Reference"><a href="#More-Reference" class="headerlink" title="More Reference:"></a>More Reference:</h5><blockquote>
-<ul>
-<li><a href="https://msdn.microsoft.com/en-us/library/2k3te2cs.aspx" target="_blank" rel="external">Using Regular Expressions in Visual Studio</a></li>
-<li><a href="https://msdn.microsoft.com/en-us/library/ms243413.aspx" target="_blank" rel="external">Assert.AreEqual Method (Object, Object) (Microsoft.VisualStudio.TestTools.UnitTesting)</a></li>
-<li><a href="https://stackoverflow.com/questions/3292292/is-there-a-shortcut-to-swap-reorder-parameters-in-visual-studio-ide" target="_blank" rel="external">shortcut to swap/reorder parameters in vs?</a></li>
-</ul>
-</blockquote>
 
 
                 <hr>
@@ -216,12 +209,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2017/08/21/Git-Basic-Commands/" data-toggle="tooltip" data-placement="top" title="Git Basic Commands">&larr; Previous Post</a>
+                            <a href="/2017/10/02/FSharpDotNetAndMac/" data-toggle="tooltip" data-placement="top" title="F# in Mac OS.">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2017/08/13/UnBlockDllExtension/" data-toggle="tooltip" data-placement="top" title="Unblock Dll Extension">Next Post &rarr;</a>
+                            <a href="/2017/08/19/vs-regex/" data-toggle="tooltip" data-placement="top" title="RegEx in Visual Studio">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -268,9 +261,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#VisualStdio" title="VisualStdio">VisualStdio</a>
-                        
-                          <a class="tag" href="/tags/#RegEx" title="RegEx">RegEx</a>
+                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
                         
                     </div>
                 </section>
@@ -291,8 +282,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "vrnithinkumar";
-    var disqus_identifier = "http://vrnithinkumar.github.io/2017/08/19/vs-regex/";
-    var disqus_url = "http://vrnithinkumar.github.io/2017/08/19/vs-regex/";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2017/08/21/Git-Basic-Commands/";
+    var disqus_url = "http://vrnithinkumar.github.io/2017/08/21/Git-Basic-Commands/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
