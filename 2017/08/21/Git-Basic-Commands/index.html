@@ -185,17 +185,20 @@
                 post-container">
 
                 <h2 id="Introduction-to-Git"><a href="#Introduction-to-Git" class="headerlink" title="Introduction to Git"></a>Introduction to Git</h2><p><a href="https://git-scm.com/" target="_blank" rel="external">Git</a>, a version control created by <a href="https://en.wikipedia.org/wiki/Linus_Torvalds" target="_blank" rel="external">Linus</a>, creator of Linux. It was created for managing contributions to linux code base. This post is covering some of the basic commands which used regularly.</p>
-<h5 id="Git-Terms"><a href="#Git-Terms" class="headerlink" title="Git Terms"></a>Git Terms</h5><p><strong>Remote</strong> : A remote repository is hosted in internet and we keep our project copy there. It will act as a center repository for the project and different local repositories will push code to the remote.<br><code>$ git remote</code> - to list all the remotes.<br><strong>Upstream</strong> : It is used to refer the original repository we used to fork. While we fork a repository, it will not set the upstream by default. We must configure a upstream repository in Git to sync changes made in the original repository.</p>
-<h5 id="Git-Work-Flow"><a href="#Git-Work-Flow" class="headerlink" title="Git Work Flow"></a>Git Work Flow</h5><ul>
-<li>Forking the repository<br>In the top-right corner of the page, click Fork. Clicking on the fork button from project page will create a forked project under your account.</li>
-<li>Cloning the forked repository<br><code>$ git clone https://github.com/user/awesome.git</code></li>
-<li>Setting up upstream<br><code>$ git remote add upstream https://github.com/original_author/awesome.git</code><br>After setting up the upstream, we can sync the upstream to get changes made in the original repository.</li>
-<li>Creating a new branch<br><code>$ git checkout-b MyNewBranch</code></li>
-<li>Committing changes to the new branch<br><code>$ git push origin MyNewBranch</code></li>
-<li>Deleting the branch after merging<br><code>$ git branch -D MyNewBranch</code> - This will delete the branch even if we did not merge or rebase it.</li>
-<li>Pruning all branches<br><code>$ git remote prune origin</code></li>
-<li>Fetching changes from the upstream<br>To get the latest changes made in the original repository, we can fetch it from upstream.<br><code>$ git fetch upstream</code></li>
-<li>Merging our master with upstream<br><code>$ git merge upstream/master</code><h5 id="More-Reference"><a href="#More-Reference" class="headerlink" title="More Reference:"></a>More Reference:</h5></li>
+<h4 id="Git-Terms"><a href="#Git-Terms" class="headerlink" title="Git Terms"></a>Git Terms</h4><p><strong>Branch</strong> : Branch is to start a new line of development. It will be independent of the main and act as new workspace. It will allow the developer to move in new working directory without messing the main code.</p>
+<p><strong>Remote</strong> : A remote repository is hosted in internet and we keep our project copy there. It will act as a center repository for the project and different local repositories will push code to the remote.<br><code>$ git remote</code> - to list all the remotes.</p>
+<p><strong>Upstream</strong> : It is used to refer the original repository we used to fork. While we fork a repository, it will not set the upstream by default. We must configure a upstream repository in Git to sync changes made in the original repository.</p>
+<p><strong>Forking</strong> : Forking gives a way to create a copy of server side repository from the original server repository. It will act as the remote for the local repository and allow the contributor to have a public repository to share. Contributor will have both private local one and public server-side one.</p>
+<h4 id="Git-Commands"><a href="#Git-Commands" class="headerlink" title="Git Commands"></a>Git Commands</h4><ul>
+<li><strong>Forking the repository</strong><br>In the top-right corner of the page, click Fork. Clicking on the fork button from project page will create a forked project under your account.</li>
+<li><strong>Cloning the forked repository</strong><br><code>$ git clone https://github.com/user/awesome.git</code></li>
+<li><strong>Setting up upstream</strong><br><code>$ git remote add upstream https://github.com/original_author/awesome.git</code><br>After setting up the upstream, we can sync the upstream to get changes made in the original repository.</li>
+<li><strong>Creating a new branch</strong><br><code>$ git checkout -b MyNewBranch</code> - This will create a new branch and checkout it.</li>
+<li><strong>Committing changes to the new branch</strong><br><code>$ git push origin MyNewBranch</code></li>
+<li><strong>Deleting the branch after merging</strong><br><code>$ git branch -D MyNewBranch</code> - This will delete the branch even if we did not merge or rebase it.</li>
+<li><strong>Pruning all branches</strong><br><code>$ git remote prune origin</code></li>
+<li><strong>Fetching changes from the upstream</strong><br>To get the latest changes made in the original repository, we can fetch it from upstream.<br><code>$ git fetch upstream</code></li>
+<li><strong>Merging our master with upstream</strong><br><code>$ git merge upstream/master</code><h4 id="More-Reference"><a href="#More-Reference" class="headerlink" title="More Reference"></a>More Reference</h4></li>
 <li><a href="https://help.github.com/articles/fork-a-repo/" target="_blank" rel="external">Fork a repository</a></li>
 <li><a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" target="_blank" rel="external">Add upstream</a></li>
 <li><a href="https://stackoverflow.com/questions/3184555/cleaning-up-old-remote-git-branches" target="_blank" rel="external">Cleaning up old remote branches</a></li>
