@@ -13,11 +13,11 @@
 
     <title>
         
-          Unblock Dll Extension - Sharing Some Bits | VR&#39;s Blog
+          GSoC 2020 - Find null smart pointer dereferences with the LLVM-Clang Static Analyzer - Sharing Some Bits | VR&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/08/13/UnBlockDllExtension/">
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2020/06/02/GSoC-2020/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -148,7 +148,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('vs.png')
+        background-image: url('llvm.png')
     }
 </style>
 <header class="intro-header" >
@@ -158,16 +158,18 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#VisualStdio" title="VisualStdio">VisualStdio</a>
+                          <a class="tag" href="/tags/#LLVM" title="LLVM">LLVM</a>
                         
-                          <a class="tag" href="/tags/#Extension" title="Extension">Extension</a>
+                          <a class="tag" href="/tags/#Clang" title="Clang">Clang</a>
+                        
+                          <a class="tag" href="/tags/#Static-Analysis" title="Static-Analysis">Static-Analysis</a>
                         
                     </div>
-                    <h1>Unblock Dll Extension</h1>
-                    <h2 class="subheading"> &quot;A helper extension remove extension dll from Visual Studio.&quot;</h2>
+                    <h1>GSoC 2020 - Find null smart pointer dereferences with the LLVM-Clang Static Analyzer</h1>
+                    <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by Nithin VR on
-                        2017-08-13
+                        Posted by Nithin on
+                        2020-06-02
                     </span>
                 </div>
             </div>
@@ -186,17 +188,11 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="No-Access-Error-in-Visual-Studio"><a href="#No-Access-Error-in-Visual-Studio" class="headerlink" title="No Access Error in Visual Studio"></a>No Access Error in Visual Studio</h2><p>The given below error is very common, frustrating and encountered by many Visual Studio users.<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Unable to copy file &quot;obj\Debug\project.pdb&quot; to &quot;bin\project.pdb&quot;. Access to the path &apos;bin\project.pdb&apos; is denied.</div></pre></td></tr></table></figure></p>
-<p>It was caused by the pdb or dll file made read only or hidden by the Visual studio itself. If you just remove those attributes from that file this error will go away. But the process is little ve<br><a href="https://stackoverflow.com/questions/9750101/unable-to-copy-file-access-to-the-path-is-denied/12740768?noredirect=1#comment75731595_12740768" target="_blank" rel="external">StackOverflow question</a><br>No Access to the path error look like this:<br><img src="/2017/08/13/UnBlockDllExtension/NoAccessError.png" alt="Alt text" title="No Access Error."><br></p>
-<h1 id="Unblock-Dll-Extension"><a href="#Unblock-Dll-Extension" class="headerlink" title="Unblock Dll Extension"></a>Unblock Dll Extension</h1><p>A tiny helper to remove the ReadOnly and Hidden attribute from dll’s and executables which blocking the Visual Studio from building the project. Link to download </p>
-<h3 id="What-does-it-do"><a href="#What-does-it-do" class="headerlink" title="What does it do"></a>What does it do</h3><p>Right click on the Error List window and click the Unblock Files menu item.<br><img src="/2017/08/13/UnBlockDllExtension/UnBlockMenuItem.png" alt="alt text" title="Menu Item in Error Window."><br>Result of the action will be shown in message box like this :<br><img src="/2017/08/13/UnBlockDllExtension/ResultAfterUnblocking.png" alt="alt text" title="Result After Unblocking."></p>
-<blockquote>
-<ul>
-<li>The extension will find all the files causing the error and remove all the Read Only and Hidden attribute.<br>Please feel free to send the feedback, bug, or any suggestions.</li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=NithinVR.UnBlockDllExtension" target="_blank" rel="external">Link to Download</a></li>
-<li><a href="https://github.com/vrnithinkumar/UnblockDllExtension" target="_blank" rel="external">Link to Source</a></li>
-</ul>
-</blockquote>
+                <p>I am happy to announce that my proposal for GSoC 2020 - Find null smart pointer dereferences with the LLVM-Clang Static Analyzer got accepted. This summer I will be working on adding the feature to the static analyser to find null smart pointer dereferences. </p>
+<p>I am very much excited and terrified. Hopefully with help from my mentors <strong>Artem Dergachev</strong>, <strong>Gabor Horwath</strong>, and <strong>Valeriy Savchenkod</strong>, I will be able to finish the project with.</p>
+<p>I will try to blog my progress and anything exciting I find in my journey.</p>
+<hr>
+<p><a href="https://summerofcode.withgoogle.com/projects/#5376312975294464" target="_blank" rel="external">More Details: Find null smart pointer dereferences with the Static Analyzer</a></p>
 
 
                 <hr>
@@ -205,13 +201,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2017/08/19/vs-regex/" data-toggle="tooltip" data-placement="top" title="RegEx in Visual Studio">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/12/04/AssemblerAndLinker/" data-toggle="tooltip" data-placement="top" title="Assembler & Linker">Next Post &rarr;</a>
+                            <a href="/2018/05/06/vim-Notes/" data-toggle="tooltip" data-placement="top" title="VIM Notes">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -258,9 +250,11 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#VisualStdio" title="VisualStdio">VisualStdio</a>
+                          <a class="tag" href="/tags/#LLVM" title="LLVM">LLVM</a>
                         
-                          <a class="tag" href="/tags/#Extension" title="Extension">Extension</a>
+                          <a class="tag" href="/tags/#Clang" title="Clang">Clang</a>
+                        
+                          <a class="tag" href="/tags/#Static-Analysis" title="Static-Analysis">Static-Analysis</a>
                         
                     </div>
                 </section>
@@ -281,8 +275,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "vrnithinkumar";
-    var disqus_identifier = "http://vrnithinkumar.github.io/2017/08/13/UnBlockDllExtension/";
-    var disqus_url = "http://vrnithinkumar.github.io/2017/08/13/UnBlockDllExtension/";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2020/06/02/GSoC-2020/";
+    var disqus_url = "http://vrnithinkumar.github.io/2020/06/02/GSoC-2020/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
