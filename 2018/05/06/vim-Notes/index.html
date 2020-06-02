@@ -13,11 +13,11 @@
 
     <title>
         
-          F# Mentorship Program : Week-2 - Sharing Some Bits | VR&#39;s Blog
+          VIM Notes - Sharing Some Bits | VR&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/10/29/FSharpMentorship-2/">
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2018/05/06/vim-Notes/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -148,7 +148,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('FSharpInViolate.png')
+        background-image: url('dotnet.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -158,14 +158,14 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#F#" title="F#">F#</a>
+                          <a class="tag" href="/tags/#vim" title="vim">vim</a>
                         
                     </div>
-                    <h1>F# Mentorship Program : Week-2</h1>
-                    <h2 class="subheading"> &quot;F# Software Foundation’s Mentorship Program. Week-2&quot;</h2>
+                    <h1>VIM Notes</h1>
+                    <h2 class="subheading">&quot; All my VIM related notes&quot;</h2>
                     <span class="meta">
                         Posted by Nithin VR on
-                        2017-10-29
+                        2018-05-06
                     </span>
                 </div>
             </div>
@@ -184,31 +184,152 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h3><p>I updated my progress in both sharp for fun and profit and hacker rank, we discussed one of my solution in hacker rank. Oleg suggested to try Fibonacci in different ways. We tried solving the a problem from hackerrank - <a href="https://www.hackerrank.com/challenges/lambda-march-compute-the-perimeter-of-a-polygon" target="_blank" rel="external">Compute the Perimeter of a Polygon</a>.</p>
-<h4 id="My-initial-code"><a href="#My-initial-code" class="headerlink" title="My initial code"></a>My initial code</h4><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="comment">//Enter your code here. Read input from STDIN. Print output to STDOUT</span></div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">distance</span> (<span class="params">x1:<span class="keyword">int</span>,y1:<span class="keyword">int</span></span>) (<span class="params">x2:<span class="keyword">int</span>,y2:<span class="keyword">int</span></span>) </span>=</div><div class="line">    <span class="keyword">let</span> xDiff = abs x1-x2</div><div class="line">    <span class="keyword">let</span> yDiff = abs y1-y2</div><div class="line">    <span class="keyword">let</span> sqrSum = (pown xDiff <span class="number">2</span>)+( pown yDiff <span class="number">2</span>)</div><div class="line">    sqrt (<span class="keyword">double</span> sqrSum)</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">getPoint</span> (<span class="params">s:<span class="keyword">string</span></span>) </span>=</div><div class="line">    <span class="keyword">let</span> va = </div><div class="line">        s.Split(<span class="string">' '</span>) </div><div class="line">        |&gt; Array.map System.Int32.Parse</div><div class="line">    (va.[<span class="number">0</span>], va.[<span class="number">1</span>])</div><div class="line"></div><div class="line">[<span class="meta">&lt;EntryPoint&gt;</span>]</div><div class="line"><span class="keyword">let</span> main argv = </div><div class="line">    <span class="keyword">let</span> t = System.Console.ReadLine()|&gt; <span class="keyword">int</span></div><div class="line">    <span class="keyword">let</span> values = </div><div class="line">        Seq.initInfinite(fun _ -&gt; System.Console.ReadLine())</div><div class="line">        |&gt; Seq.takeWhile(isNull &gt;&gt; not)</div><div class="line">        |&gt; Seq.map getPoint</div><div class="line">        |&gt; Seq.toList</div><div class="line"></div><div class="line">    <span class="keyword">let</span> first, rest  = values.[<span class="number">0</span>], List.tail values</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">let</span> <span class="title">foldFunc</span> (<span class="params">perimeter, prevPoint</span>) nxtPoint </span>=</div><div class="line">        perimeter+(distance prevPoint nxtPoint), nxtPoint</div><div class="line"></div><div class="line">    <span class="keyword">let</span> (finalPerimeter , last) = List.<span class="function">fold <span class="title">foldFunc</span> (<span class="params"><span class="number">0.0</span>, first</span>) rest</span></div><div class="line"><span class="function">    </span></div><div class="line"><span class="function">    printfn "%f" (<span class="params">finalPerimeter + (distance first last</span>))</span></div><div class="line"><span class="function">    0</span></div></pre></td></tr></table></figure>
-<h4 id="Cleaned-up-code"><a href="#Cleaned-up-code" class="headerlink" title="Cleaned up code"></a>Cleaned up code</h4><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="comment">//Enter your code here. Read input from STDIN. Print output to STDOUT</span></div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">distance</span> (<span class="params">(x1:<span class="keyword">int</span>,y1:<span class="keyword">int</span></span>), (<span class="params">x2:<span class="keyword">int</span>,y2:<span class="keyword">int</span></span>)) </span>=</div><div class="line">    <span class="keyword">let</span> xDiff = abs x1-x2</div><div class="line">    <span class="keyword">let</span> yDiff = abs y1-y2</div><div class="line">    <span class="keyword">let</span> sqrSum = (pown xDiff <span class="number">2</span>)+( pown yDiff <span class="number">2</span>)</div><div class="line">    sqrt (<span class="keyword">double</span> sqrSum)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">getPoint</span> (<span class="params">s:<span class="keyword">string</span></span>) </span>=</div><div class="line">    <span class="keyword">let</span> [| x ; y |] = </div><div class="line">        s.Split(<span class="string">' '</span>) </div><div class="line">        |&gt; Array.map System.Int32.Parse</div><div class="line">    x, y</div><div class="line"></div><div class="line">[<span class="meta">&lt;EntryPoint&gt;</span>]</div><div class="line"><span class="keyword">let</span> main argv = </div><div class="line">    <span class="keyword">let</span> testCases = System.Console.ReadLine()|&gt; <span class="keyword">int</span></div><div class="line">    <span class="keyword">let</span> mutable firstPoint = (<span class="number">0</span>,<span class="number">0</span>)</div><div class="line">    <span class="keyword">let</span> values = </div><div class="line">        Seq.<span class="function">init <span class="title">testCases</span> (<span class="params">fun i -&gt; System.Console.ReadLine(</span>))</span></div><div class="line"><span class="function">        |&gt; Seq.map getPoint</span></div><div class="line"><span class="function">        |&gt; Seq.toList</span></div><div class="line"><span class="function">        </span></div><div class="line">    let lines = Seq.pairwise (values.[0]::(List.rev values))</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> perimeter = </div><div class="line">        lines</div><div class="line">        |&gt; Seq.map distance </div><div class="line">        |&gt; Seq.sum</div><div class="line">    </div><div class="line">    printfn <span class="string">"%f"</span> perimeter</div><div class="line">    <span class="number">0</span></div></pre></td></tr></table></figure>
-<h3 id="New-concepts-I-learned"><a href="#New-concepts-I-learned" class="headerlink" title="New concepts I learned"></a>New concepts I learned</h3><ul>
-<li><strong>Seq.pairwise</strong><br>Seq.pairwise method will take a sequence and returns a sequence of tuple with element in the input sequence and its predecessor.<br>eg: <code>Seq.pairwise [1..4]</code> returns <code>[(1, 2); (2, 3); (3, 4)]</code></li>
-<li><p><strong>Seq.init</strong><br>Generates a new sequence which, when iterated, will return successive elements by calling the given function, up to the given count. eg :Seq.init count initializer<br>eg : <code>Seq.init 4 (fun n -&gt; n * 2)</code> returns <code>[0, 2, 4, 6]</code></p>
-</li>
-<li><p><strong>yield</strong> <strong>VS</strong> <strong>yield!(yield bang)</strong></p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> simpleYield = seq &#123; <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.5</span> <span class="keyword">do</span> <span class="keyword">yield</span> i&#125;</div><div class="line">\\ returns &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> simpleYieldBang = seq &#123; <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">6.</span><span class="number">.10</span> <span class="keyword">do</span> <span class="keyword">yield</span> i; <span class="keyword">yield</span>!  simpleYield&#125;</div><div class="line">\\ returns &#123;<span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;</div></pre></td></tr></table></figure>
+                <h1 id="VIM-Notes"><a href="#VIM-Notes" class="headerlink" title="VIM Notes"></a>VIM Notes</h1><p>Writing down about all my vim tips here. <strong>It will be updated regularly</strong></p>
+<h2 id="Modes"><a href="#Modes" class="headerlink" title="Modes"></a>Modes</h2><p>Vim has different modes to manipulate the text. Normal Insert and Visual are the main modes.</p>
+<h3 id="Normal-Mode"><a href="#Normal-Mode" class="headerlink" title="Normal Mode"></a>Normal Mode</h3><p>Default or natural resting state. All the commands are running there to manipulate the text.</p>
+<h3 id="Insert-Mode"><a href="#Insert-Mode" class="headerlink" title="Insert Mode"></a>Insert Mode</h3><p>Mode to edit add and correct text. Where you can type.</p>
+<ul>
+<li><code>Ctrl + h</code> Delete back one char.</li>
+<li><code>Ctrl + w</code> Delete a word.</li>
+<li><code>Ctrl + u</code> Delete to beginning of the line.</li>
+<li><code>Ctrl + [</code> Change to normal mode.</li>
+<li><code>Ctrl + o</code> Insert Normal mode.</li>
+<li><code>Ctrl + r, {register}</code> is used to paste the in insert mode from register specified.</li>
+</ul>
+<h3 id="Insert-Normal-Mode"><a href="#Insert-Normal-Mode" class="headerlink" title="Insert Normal Mode"></a>Insert Normal Mode</h3><p>Just one command we can execute from the Insert mode.<br><code>Ctrl + o, zz</code> will move the current line to the center.</p>
+<h3 id="Visual-Mode"><a href="#Visual-Mode" class="headerlink" title="Visual Mode"></a>Visual Mode</h3><p>Easy to manipulate in character level, line level and rectangular blocks. Many operations and commands will be work similar to Normal mode.<br><code>v</code> will change in to the visual mode char level.<br><code>V</code> will change in to the visual mode line level.<br><code>Ctrl + v</code> will change in to the visual mode block level. But in windows <code>Ctrl + q</code> will make it to block visual mode.<br><code>o</code> will toggle the free end in the visual mode.</p>
+<h2 id="Basic-Actions"><a href="#Basic-Actions" class="headerlink" title="Basic Actions"></a>Basic Actions</h2><ul>
+<li><code>hjkl</code> - for moving around</li>
+<li><code>w</code> - jump a word.</li>
+<li><code>$</code> - at the end of line</li>
+<li><code>^</code> - beginning of the line.</li>
+</ul>
+<h3 id="Advanced-Movements"><a href="#Advanced-Movements" class="headerlink" title="Advanced Movements"></a>Advanced Movements</h3><ul>
+<li><code>`.</code> - jump to last change position.</li>
+<li><code>ma</code> - Mark the current curser location as “a”.</li>
+<li><code>`a</code> - Jump to mark named as “a”.</li>
+<li><code>:marks</code> - List all marks.</li>
+</ul>
+<h3 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h3><ul>
+<li><code>a</code> is used for appending.</li>
+<li><code>A</code> for appending to the end of the line. <code>$a</code> is another way to achieve this.</li>
+</ul>
+<h3 id="Insert"><a href="#Insert" class="headerlink" title="Insert"></a>Insert</h3><ul>
+<li><code>i</code> is used for inserting.</li>
+<li><code>I</code> is used for inserting in the first of line. <code>^i</code> is equivalent to this.</li>
+</ul>
+<h3 id="Dot-to-repeat"><a href="#Dot-to-repeat" class="headerlink" title="Dot to repeat"></a>Dot to repeat</h3><ul>
+<li><code>.</code> will repeats last executed action. Will repeating the last action VIM will consider all changes inside an insert mode to exit as single action. </li>
+<li>It will repeat every keystroke inside the insert mode.</li>
+</ul>
+<h3 id="Undo"><a href="#Undo" class="headerlink" title="Undo"></a>Undo</h3><ul>
+<li><code>u</code> for undoing. From the moment we enter Insert mode until we return to Normal mode, everything we type (or delete) counts as a single change.</li>
+</ul>
+<h3 id="Delete"><a href="#Delete" class="headerlink" title="Delete"></a>Delete</h3><ul>
+<li><code>d</code>     id used for deleting a character.</li>
+<li><code>dd</code>    will delete the whole line.</li>
+<li><code>dw</code>    will delete a word.</li>
+<li><code>daw</code>   will delete a word including the space around it.</li>
+<li><code>diw</code>   will delete a word not without the space.</li>
+</ul>
+<h3 id="Finding-a-char-using-f-and-t"><a href="#Finding-a-char-using-f-and-t" class="headerlink" title="Finding a char using f and t"></a>Finding a char using f and t</h3><ul>
+<li><code>fx</code> will find the char x in the line to find the next match use <code>;</code></li>
+<li><code>,</code> will use the last character search.</li>
+</ul>
+<h3 id="Indentation"><a href="#Indentation" class="headerlink" title="Indentation"></a>Indentation</h3><ul>
+<li><code>&gt;</code> is used for indentation.</li>
+<li><code>&lt;</code> left shift</li>
+<li><code>=</code> Auto indentation.</li>
+<li><code>&gt;G</code> will increases the indentation from the current line until the end of the file.</li>
+</ul>
+<h3 id="Yank"><a href="#Yank" class="headerlink" title="Yank"></a>Yank</h3><ul>
+<li>copy from current line to the n’th line<ol>
+<li><code>y20G</code>      this will yank from current line to 20th line.</li>
+<li><code>:.,20y</code>    same with range, <code>:[range]y[ank] [x]</code>.</li>
+<li><code>&quot;[register]y</code> will copy to the register specified. eg : <code>&quot;*y</code> - Will copy to system clipbord(register *).</li>
+</ol>
 </li>
 </ul>
-<p><code>yield!</code> will allow to yield a seq as elements not just as seq. It will yield each elements in the sequence.</p>
-<h3 id="Here-are-the-few-questions-we-discussed"><a href="#Here-are-the-few-questions-we-discussed" class="headerlink" title="Here are the few questions we discussed"></a>Here are the few questions we discussed</h3><ol>
-<li><p><em>Is None is same as null of C#?</em><br>Yes. When we convert the F# to C# it is similar to null. It is used to represent a value that may not exist or invalid.</p>
-</li>
-<li><p><em>Is there any types for None or Some?</em><br>Yes. It is called Option type a union type of two case <code>None</code> and <code>Some</code>. eg : <code>int option</code> is a option type which wraps a int value. It is used with pattern matching for handling cases like where valid value not exists. <a href="https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/options" target="_blank" rel="external">More Details</a></p>
-</li>
-<li><p><em>Is List.fold is recursive calling or for loop inside implementation?</em><br>Analyze a recursive data structure, fold recombine the results of recursively processing its constituent parts, building up a return value.</p>
-</li>
-<li><p><em>Is Seq.unfold similar to lazy list in C#? Is it storing any state internally?</em><br>Internal structure for iterator and we a calculating on the fly. Elements in the stream are generated on-demand by applying the element generator, until a None value is returned by the element generator. Each call to the element generator returns a new residual state.</p>
-</li>
-<li><p><em>Partial application, is the parameter passing always follow from the left to right?</em><br>Yes. It follows parameter passing order always follow from the left to right.</p>
-</li>
-<li><p><em>While finding the type by type inference do we actually handle the runtime case?</em><br>For example :<br> <code>let x = 2147483647 + 1</code> <strong>No error</strong><br> <code>let y = 2147483648</code> <strong>Shows error FS1147: This number is outside the allowable range for 32-bit signed integers.</strong><br>Compiler will check only the current values is in the set of supported values of the type. It will not do any operation to verify the type.</p>
-</li>
+<h3 id="Simple-increment-and-Decrement"><a href="#Simple-increment-and-Decrement" class="headerlink" title="Simple increment and Decrement"></a>Simple increment and Decrement</h3><ul>
+<li><code>Ctrl + a</code> will increment the number under the cursor.</li>
+<li><code>Ctrl + x</code> will decrement the number under the cursor.</li>
+</ul>
+<h3 id="Search-and-Replace"><a href="#Search-and-Replace" class="headerlink" title="Search and Replace"></a>Search and Replace</h3><p><code>:[range]s[ubstitute]/{pattern}/{string}/[flags] [count]</code> format for the search and replace command.</p>
+<p><strong>Flags</strong></p>
+<ul>
+<li><code>c</code> confirm on each substitution.</li>
+<li><code>g</code> replace all occurrences.</li>
+<li><code>i</code> ignore case for pattern.</li>
+</ul>
+<p><code>:%s\old\new\g</code> : will replace the “old” with “new” in all document. </p>
+<h3 id="AutoComplete-in-vim"><a href="#AutoComplete-in-vim" class="headerlink" title="AutoComplete in vim"></a>AutoComplete in vim</h3><ul>
+<li>Auto word completion</li>
+<li>Auto line completion</li>
+<li>Auto file completion<h2 id="Registers"><a href="#Registers" class="headerlink" title="Registers"></a>Registers</h2>Registers are essentially the names memory spaces in VIM to save and re-use the texts. Registers are being accessed by <code>&quot;</code>.</li>
+<li><code>&quot;ry</code> - will yank the selected text to register named “r”.</li>
+<li><code>&quot;rp</code> - will paste the content in register “r” in normal mode.</li>
+<li><code>Ctrl + r</code> - will paste the data from register “r”.<h3 id="Common-registers"><a href="#Common-registers" class="headerlink" title="Common registers"></a>Common registers</h3>1) <code>*</code> - System clipboard.</li>
+</ul>
+<h2 id="Macro"><a href="#Macro" class="headerlink" title="Macro"></a>Macro</h2><h2 id="Sessions"><a href="#Sessions" class="headerlink" title="Sessions"></a>Sessions</h2><p>Sessions are used to save the current state of vim and restore it when you needed.</p>
+<ul>
+<li><code>:mks</code> is used to create a session for your vim editor.<br>  eg: <code>:mks ~\vimsessions\bar.vim</code></li>
+<li><code>:source</code> is used to restore the session which you saved.<br>  eg: <code>:source ~\vimsessions\bar.vim</code></li>
+</ul>
+<h2 id="VIM-plugins"><a href="#VIM-plugins" class="headerlink" title="VIM plugins"></a>VIM plugins</h2><h3 id="Vim-OrgMode"><a href="#Vim-OrgMode" class="headerlink" title="Vim-OrgMode"></a>Vim-OrgMode</h3><p><strong>Plain List:</strong></p>
+<ul>
+<li><code>&lt;localleader&gt; cl or &lt;CR&gt;</code> - insert plainlist item below</li>
+<li><code>&lt;localleader&gt; cL or &lt;C-S-CR&gt;</code> - insert plainlist item above</li>
+</ul>
+<p><strong>Checkboxes:</strong></p>
+<ul>
+<li><code>&lt;localleader&gt; cc</code> - toggle status</li>
+<li><code>&lt;localleader&gt; cn or &lt;CR&gt;</code> - insert checkbox below</li>
+<li><code>&lt;localleader&gt; cN or &lt;C-S-CR&gt;</code> - insert checkbox above</li>
+</ul>
+<p><strong>Dates:</strong></p>
+<ul>
+<li><code>&lt;localleader&gt; sa</code> - insert date</li>
+<li><code>&lt;localleader&gt; si</code> - insert inactive date</li>
+</ul>
+<p><code>&lt;localleader&gt;</code> is <code>\</code> for by default.</p>
+<h2 id="Split-Screen"><a href="#Split-Screen" class="headerlink" title="Split Screen"></a>Split Screen</h2><p><strong>with the <code>&lt;C-w&gt;</code> key</strong> </p>
+<ul>
+<li><code>&lt;Ctrl-w&gt;n</code>       - <code>:new</code> horizontal split (editing a new empty buffer)</li>
+<li><code>&lt;Ctrl-w&gt;s</code>       - <code>:split</code> window horizontally (editing current buffer)</li>
+<li><code>&lt;Ctrl-w&gt;v</code>       - <code>:vsplit</code> window vertically (editing current buffer)</li>
+<li><code>&lt;Ctrl-w&gt;c</code>       - <code>:close</code> window</li>
+<li><code>&lt;Ctrl-w&gt;o</code>       - close all windows, leaving :only the current window open</li>
+<li><code>&lt;Ctrl-w&gt;w</code>       - go to next window</li>
+<li><code>&lt;Ctrl-w&gt;p</code>       - go to previous window</li>
+<li><code>&lt;Ctrl-w&gt;&lt;Up&gt;</code>    - go to window above</li>
+<li><code>&lt;Ctrl-w&gt;&lt;Down&gt;</code>  - go to window below</li>
+<li><code>&lt;Ctrl-w&gt;&lt;Left&gt;</code>  - go to window on left</li>
+<li><code>&lt;Ctrl-w&gt;&lt;Right&gt;</code> - go to window on right</li>
+<li><code>&lt;C-w&gt; &lt;C-r&gt;</code>     - To swap the two parts of a split window</li>
+</ul>
+<h3 id="Window-size-commands"><a href="#Window-size-commands" class="headerlink" title="Window size commands"></a>Window size commands</h3><ul>
+<li><code>Ctrl+W +/-</code> - increase/decrease height (ex. 20<c-w>+)    </c-w></li>
+<li><code>Ctrl+W &gt;/&lt;</code> - increase/decrease width (ex. 30<c-w>&lt;)    </c-w></li>
+<li><code>Ctrl+W _</code> - set height (ex. 50<c-w>_)    </c-w></li>
+<li><code>Ctrl+W |</code> - set width (ex. 50<c-w>|)    </c-w></li>
+<li><code>Ctrl+W =</code> - equalize width and height of all windows<br><strong>Resizing will happen only by one characters.</strong><h2 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h2></li>
+<li><code>:new</code> will create a split window with an unnamed buffer. </li>
+<li><code>:badd filename</code> will add the file to the bufferlist.</li>
+<li><code>:enew</code> will open one in the current window. </li>
+<li><code>:vnew</code> will open one in a vertically split window. </li>
+<li><code>:tabnew</code> will open one in a new tab.</li>
+<li><code>:bn</code> will change to next buffer.</li>
+<li><code>:bp</code> will change to previous buffer.</li>
+<li><code>:br</code> will change to starting buffer list.</li>
+<li><code>:bf</code> will change to first buffer.</li>
+<li><code>:ls</code> will list all the buffers.</li>
+<li><code>:bd</code> will Delete the buffer , also we can specify the buffer id too.</li>
+</ul>
+<h2 id="Random-hacks"><a href="#Random-hacks" class="headerlink" title="Random hacks"></a>Random hacks</h2><ul>
+<li><code>:r !date /t</code> will add the current date.</li>
+</ul>
+<h2 id="Links"><a href="#Links" class="headerlink" title="Links"></a>Links</h2><ol>
+<li><a href="http://www.rayninfo.co.uk/vimtips.html" target="_blank" rel="external">http://www.rayninfo.co.uk/vimtips.html</a></li>
 </ol>
 
 
@@ -218,13 +339,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2018/01/30/GenericsInDotNet/" data-toggle="tooltip" data-placement="top" title="Generics in .NET">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2017/10/02/FSharpMentorship-1/" data-toggle="tooltip" data-placement="top" title="F# Mentorship Program : Week-1">Next Post &rarr;</a>
+                            <a href="/2018/01/30/GenericsInDotNet/" data-toggle="tooltip" data-placement="top" title="Generics in .NET">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -271,7 +388,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#F#" title="F#">F#</a>
+                          <a class="tag" href="/tags/#vim" title="vim">vim</a>
                         
                     </div>
                 </section>
@@ -292,8 +409,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "vrnithinkumar";
-    var disqus_identifier = "http://vrnithinkumar.github.io/2017/10/29/FSharpMentorship-2/";
-    var disqus_url = "http://vrnithinkumar.github.io/2017/10/29/FSharpMentorship-2/";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2018/05/06/vim-Notes/";
+    var disqus_url = "http://vrnithinkumar.github.io/2018/05/06/vim-Notes/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -13,11 +13,11 @@
 
     <title>
         
-          F# Mentorship Program : Week-2 - Sharing Some Bits | VR&#39;s Blog
+          Generics in .NET - Sharing Some Bits | VR&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://vrnithinkumar.github.io/2017/10/29/FSharpMentorship-2/">
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2018/01/30/GenericsInDotNet/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -148,7 +148,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('FSharpInViolate.png')
+        background-image: url('dotnet.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -158,14 +158,16 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#F#" title="F#">F#</a>
+                          <a class="tag" href="/tags/#.NET" title=".NET">.NET</a>
+                        
+                          <a class="tag" href="/tags/#C#" title="C#">C#</a>
                         
                     </div>
-                    <h1>F# Mentorship Program : Week-2</h1>
-                    <h2 class="subheading"> &quot;F# Software Foundation’s Mentorship Program. Week-2&quot;</h2>
+                    <h1>Generics in .NET</h1>
+                    <h2 class="subheading">&quot; Design and Implementation of Generics in .NET &quot;</h2>
                     <span class="meta">
                         Posted by Nithin VR on
-                        2017-10-29
+                        2018-01-30
                     </span>
                 </div>
             </div>
@@ -184,32 +186,14 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h3><p>I updated my progress in both sharp for fun and profit and hacker rank, we discussed one of my solution in hacker rank. Oleg suggested to try Fibonacci in different ways. We tried solving the a problem from hackerrank - <a href="https://www.hackerrank.com/challenges/lambda-march-compute-the-perimeter-of-a-polygon" target="_blank" rel="external">Compute the Perimeter of a Polygon</a>.</p>
-<h4 id="My-initial-code"><a href="#My-initial-code" class="headerlink" title="My initial code"></a>My initial code</h4><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="comment">//Enter your code here. Read input from STDIN. Print output to STDOUT</span></div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">distance</span> (<span class="params">x1:<span class="keyword">int</span>,y1:<span class="keyword">int</span></span>) (<span class="params">x2:<span class="keyword">int</span>,y2:<span class="keyword">int</span></span>) </span>=</div><div class="line">    <span class="keyword">let</span> xDiff = abs x1-x2</div><div class="line">    <span class="keyword">let</span> yDiff = abs y1-y2</div><div class="line">    <span class="keyword">let</span> sqrSum = (pown xDiff <span class="number">2</span>)+( pown yDiff <span class="number">2</span>)</div><div class="line">    sqrt (<span class="keyword">double</span> sqrSum)</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">getPoint</span> (<span class="params">s:<span class="keyword">string</span></span>) </span>=</div><div class="line">    <span class="keyword">let</span> va = </div><div class="line">        s.Split(<span class="string">' '</span>) </div><div class="line">        |&gt; Array.map System.Int32.Parse</div><div class="line">    (va.[<span class="number">0</span>], va.[<span class="number">1</span>])</div><div class="line"></div><div class="line">[<span class="meta">&lt;EntryPoint&gt;</span>]</div><div class="line"><span class="keyword">let</span> main argv = </div><div class="line">    <span class="keyword">let</span> t = System.Console.ReadLine()|&gt; <span class="keyword">int</span></div><div class="line">    <span class="keyword">let</span> values = </div><div class="line">        Seq.initInfinite(fun _ -&gt; System.Console.ReadLine())</div><div class="line">        |&gt; Seq.takeWhile(isNull &gt;&gt; not)</div><div class="line">        |&gt; Seq.map getPoint</div><div class="line">        |&gt; Seq.toList</div><div class="line"></div><div class="line">    <span class="keyword">let</span> first, rest  = values.[<span class="number">0</span>], List.tail values</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">let</span> <span class="title">foldFunc</span> (<span class="params">perimeter, prevPoint</span>) nxtPoint </span>=</div><div class="line">        perimeter+(distance prevPoint nxtPoint), nxtPoint</div><div class="line"></div><div class="line">    <span class="keyword">let</span> (finalPerimeter , last) = List.<span class="function">fold <span class="title">foldFunc</span> (<span class="params"><span class="number">0.0</span>, first</span>) rest</span></div><div class="line"><span class="function">    </span></div><div class="line"><span class="function">    printfn "%f" (<span class="params">finalPerimeter + (distance first last</span>))</span></div><div class="line"><span class="function">    0</span></div></pre></td></tr></table></figure>
-<h4 id="Cleaned-up-code"><a href="#Cleaned-up-code" class="headerlink" title="Cleaned up code"></a>Cleaned up code</h4><figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="comment">//Enter your code here. Read input from STDIN. Print output to STDOUT</span></div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">distance</span> (<span class="params">(x1:<span class="keyword">int</span>,y1:<span class="keyword">int</span></span>), (<span class="params">x2:<span class="keyword">int</span>,y2:<span class="keyword">int</span></span>)) </span>=</div><div class="line">    <span class="keyword">let</span> xDiff = abs x1-x2</div><div class="line">    <span class="keyword">let</span> yDiff = abs y1-y2</div><div class="line">    <span class="keyword">let</span> sqrSum = (pown xDiff <span class="number">2</span>)+( pown yDiff <span class="number">2</span>)</div><div class="line">    sqrt (<span class="keyword">double</span> sqrSum)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">let</span> <span class="title">getPoint</span> (<span class="params">s:<span class="keyword">string</span></span>) </span>=</div><div class="line">    <span class="keyword">let</span> [| x ; y |] = </div><div class="line">        s.Split(<span class="string">' '</span>) </div><div class="line">        |&gt; Array.map System.Int32.Parse</div><div class="line">    x, y</div><div class="line"></div><div class="line">[<span class="meta">&lt;EntryPoint&gt;</span>]</div><div class="line"><span class="keyword">let</span> main argv = </div><div class="line">    <span class="keyword">let</span> testCases = System.Console.ReadLine()|&gt; <span class="keyword">int</span></div><div class="line">    <span class="keyword">let</span> mutable firstPoint = (<span class="number">0</span>,<span class="number">0</span>)</div><div class="line">    <span class="keyword">let</span> values = </div><div class="line">        Seq.<span class="function">init <span class="title">testCases</span> (<span class="params">fun i -&gt; System.Console.ReadLine(</span>))</span></div><div class="line"><span class="function">        |&gt; Seq.map getPoint</span></div><div class="line"><span class="function">        |&gt; Seq.toList</span></div><div class="line"><span class="function">        </span></div><div class="line">    let lines = Seq.pairwise (values.[0]::(List.rev values))</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> perimeter = </div><div class="line">        lines</div><div class="line">        |&gt; Seq.map distance </div><div class="line">        |&gt; Seq.sum</div><div class="line">    </div><div class="line">    printfn <span class="string">"%f"</span> perimeter</div><div class="line">    <span class="number">0</span></div></pre></td></tr></table></figure>
-<h3 id="New-concepts-I-learned"><a href="#New-concepts-I-learned" class="headerlink" title="New concepts I learned"></a>New concepts I learned</h3><ul>
-<li><strong>Seq.pairwise</strong><br>Seq.pairwise method will take a sequence and returns a sequence of tuple with element in the input sequence and its predecessor.<br>eg: <code>Seq.pairwise [1..4]</code> returns <code>[(1, 2); (2, 3); (3, 4)]</code></li>
-<li><p><strong>Seq.init</strong><br>Generates a new sequence which, when iterated, will return successive elements by calling the given function, up to the given count. eg :Seq.init count initializer<br>eg : <code>Seq.init 4 (fun n -&gt; n * 2)</code> returns <code>[0, 2, 4, 6]</code></p>
-</li>
-<li><p><strong>yield</strong> <strong>VS</strong> <strong>yield!(yield bang)</strong></p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> simpleYield = seq &#123; <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">1.</span><span class="number">.5</span> <span class="keyword">do</span> <span class="keyword">yield</span> i&#125;</div><div class="line">\\ returns &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> simpleYieldBang = seq &#123; <span class="keyword">for</span> i <span class="keyword">in</span> <span class="number">6.</span><span class="number">.10</span> <span class="keyword">do</span> <span class="keyword">yield</span> i; <span class="keyword">yield</span>!  simpleYield&#125;</div><div class="line">\\ returns &#123;<span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;</div></pre></td></tr></table></figure>
-</li>
+                <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Recently I gave talk in my office related to generics in .NET. How it got introduced and how it work behind the scenes. I mainly referred the <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2001/01/designandimplementationofgenerics.pdf" target="_blank" rel="external">Design and Implementation of Generics for the .NET Common Language Runtime</a> by <strong>Andrew Kennedy</strong> and <strong>Don Syme</strong>.</p>
+<h2 id="What-is-generics"><a href="#What-is-generics" class="headerlink" title="What is generics?"></a>What is generics?</h2><p>Generics is methodology to write programs or logic, without specialising to any type. As the program loging will be generic and it can accept type as a parameter and specialize/instantiate it for that. It is also known as <a href="https://en.wikipedia.org/wiki/Parametric_polymorphism" target="_blank" rel="external">Parametric Polymorphism</a>. It is commonly used to avoid code duplication and keep the logics independent of types in single place.</p>
+<h2 id="Generics-in-NET"><a href="#Generics-in-NET" class="headerlink" title="Generics in .NET"></a>Generics in .NET</h2><h3 id="Initial-Design-Goals"><a href="#Initial-Design-Goals" class="headerlink" title="Initial Design Goals"></a>Initial Design Goals</h3><ul>
+<li>Safety : Bugs are caught at compile time.</li>
+<li>Expressivity : Different specialization using type parameter.</li>
+<li>Clarity : Less casting between types.</li>
+<li>Efficiency : Reduced or no need for run-time checks.<h3 id="Before-generics"><a href="#Before-generics" class="headerlink" title="Before generics"></a>Before generics</h3>Before Generics was introduced in C# the object is used as its the top most in class hierarchy. But it was not type safe and there was an overhead of boxing and unboxing for primitive element types.<br><em>Example : Boxing and unboxing IL instuctions</em><br><img src="/2018/01/30/GenericsInDotNet/boxing.png" alt="alt text" title="Boxing and unboxing."><br><em>Example : Object Stack vs Generic Stack</em><br><img src="/2018/01/30/GenericsInDotNet/BeforeGenerics.png" alt="alt text" title="Generics vs Object"><h3 id="IL-code"><a href="#IL-code" class="headerlink" title="IL code"></a>IL code</h3><h2 id="Comparing-with-Generics-in-NET-Java-and-C-Templates"><a href="#Comparing-with-Generics-in-NET-Java-and-C-Templates" class="headerlink" title="Comparing with Generics in .NET. Java and C++(Templates)"></a>Comparing with Generics in .NET. Java and C++(Templates)</h2></li>
 </ul>
-<p><code>yield!</code> will allow to yield a seq as elements not just as seq. It will yield each elements in the sequence.</p>
-<h3 id="Here-are-the-few-questions-we-discussed"><a href="#Here-are-the-few-questions-we-discussed" class="headerlink" title="Here are the few questions we discussed"></a>Here are the few questions we discussed</h3><ol>
-<li><p><em>Is None is same as null of C#?</em><br>Yes. When we convert the F# to C# it is similar to null. It is used to represent a value that may not exist or invalid.</p>
-</li>
-<li><p><em>Is there any types for None or Some?</em><br>Yes. It is called Option type a union type of two case <code>None</code> and <code>Some</code>. eg : <code>int option</code> is a option type which wraps a int value. It is used with pattern matching for handling cases like where valid value not exists. <a href="https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/options" target="_blank" rel="external">More Details</a></p>
-</li>
-<li><p><em>Is List.fold is recursive calling or for loop inside implementation?</em><br>Analyze a recursive data structure, fold recombine the results of recursively processing its constituent parts, building up a return value.</p>
-</li>
-<li><p><em>Is Seq.unfold similar to lazy list in C#? Is it storing any state internally?</em><br>Internal structure for iterator and we a calculating on the fly. Elements in the stream are generated on-demand by applying the element generator, until a None value is returned by the element generator. Each call to the element generator returns a new residual state.</p>
-</li>
-<li><p><em>Partial application, is the parameter passing always follow from the left to right?</em><br>Yes. It follows parameter passing order always follow from the left to right.</p>
-</li>
-<li><p><em>While finding the type by type inference do we actually handle the runtime case?</em><br>For example :<br> <code>let x = 2147483647 + 1</code> <strong>No error</strong><br> <code>let y = 2147483648</code> <strong>Shows error FS1147: This number is outside the allowable range for 32-bit signed integers.</strong><br>Compiler will check only the current values is in the set of supported values of the type. It will not do any operation to verify the type.</p>
-</li>
-</ol>
 
 
                 <hr>
@@ -219,12 +203,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2018/01/30/GenericsInDotNet/" data-toggle="tooltip" data-placement="top" title="Generics in .NET">&larr; Previous Post</a>
+                            <a href="/2018/05/06/vim-Notes/" data-toggle="tooltip" data-placement="top" title="VIM Notes">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2017/10/02/FSharpMentorship-1/" data-toggle="tooltip" data-placement="top" title="F# Mentorship Program : Week-1">Next Post &rarr;</a>
+                            <a href="/2017/10/29/FSharpMentorship-2/" data-toggle="tooltip" data-placement="top" title="F# Mentorship Program : Week-2">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -271,7 +255,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#F#" title="F#">F#</a>
+                          <a class="tag" href="/tags/#.NET" title=".NET">.NET</a>
+                        
+                          <a class="tag" href="/tags/#C#" title="C#">C#</a>
                         
                     </div>
                 </section>
@@ -292,8 +278,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "vrnithinkumar";
-    var disqus_identifier = "http://vrnithinkumar.github.io/2017/10/29/FSharpMentorship-2/";
-    var disqus_url = "http://vrnithinkumar.github.io/2017/10/29/FSharpMentorship-2/";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2018/01/30/GenericsInDotNet/";
+    var disqus_url = "http://vrnithinkumar.github.io/2018/01/30/GenericsInDotNet/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
