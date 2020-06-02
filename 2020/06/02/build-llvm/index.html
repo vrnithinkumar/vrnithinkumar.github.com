@@ -13,11 +13,11 @@
 
     <title>
         
-          Revert a Commit Which Already Pushed to a Remote Repository - Sharing Some Bits | VR&#39;s Blog
+          Building and Running LLVM-Clang Static Analyzer - Sharing Some Bits | VR&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://vrnithinkumar.github.io/2016/05/30/Revert-A-Commit/">
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2020/06/02/build-llvm/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -148,7 +148,7 @@
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('git.png')
+        background-image: url('llvm.png')
     }
 </style>
 <header class="intro-header" >
@@ -158,16 +158,18 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                          <a class="tag" href="/tags/#LLVM" title="LLVM">LLVM</a>
                         
-                          <a class="tag" href="/tags/#Version Control" title="Version Control">Version Control</a>
+                          <a class="tag" href="/tags/#Clang" title="Clang">Clang</a>
+                        
+                          <a class="tag" href="/tags/#Static-Analysis" title="Static-Analysis">Static-Analysis</a>
                         
                     </div>
-                    <h1>Revert a Commit Which Already Pushed to a Remote Repository</h1>
+                    <h1>Building and Running LLVM-Clang Static Analyzer</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
-                        Posted by Nithin VR on
-                        2016-05-30
+                        Posted by Nithin on
+                        2020-06-02
                     </span>
                 </div>
             </div>
@@ -186,20 +188,28 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>You’ve just pushed your local branch to a remote branch, but then  realized that some errors happened.</p>
-<p>Eg:</p>
+                <h2 id="Building-LLVM-From-source"><a href="#Building-LLVM-From-source" class="headerlink" title="Building LLVM From source"></a>Building LLVM From source</h2><p>I am documenting how I am building LLVM Clang in my Mac Air 2015.</p>
 <ul>
-<li>That there was  some unacceptable typo in commit message.</li>
-<li>You just added a unwanted file like ~files or class file.</li>
+<li>macOS Mojave 10.14.6</li>
+<li>1.6 GHz Intel Core i5</li>
+<li>8 GB Memory<h3 id="Get-the-source-code"><a href="#Get-the-source-code" class="headerlink" title="Get the source code"></a>Get the source code</h3><code>git clone https://github.com/llvm/llvm-project.git</code><h3 id="Build-the-code-I-am-using-ninja-to-build"><a href="#Build-the-code-I-am-using-ninja-to-build" class="headerlink" title="Build the code (I am using ninja to build)"></a>Build the code (I am using ninja to build)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">mkdir $ROOT/llvm-project/build</div><div class="line">cd $ROOT/llvm-project/build</div><div class="line">cmake -G Ninja \</div><div class="line">    -DDEFAULT_SYSROOT=&quot;$(xcrun --show-sdk-path)&quot; \</div><div class="line">    -DLLVM_ENABLE_PROJECTS=&quot;clang;libcxx;libcxxabi&quot; \</div><div class="line">    -DCMAKE_BUILD_TYPE=Release ../llvm</div><div class="line">ninja clang</div><div class="line">ninja cxx</div></pre></td></tr></table></figure>
+</li>
 </ul>
-<p>Don’t worry you can revert it to back to your previous safe commit by reverting your current commit.</p>
-<blockquote>
-<p>$ git reset HEAD^ –hard</p>
-<p>$ git push origin master -f</p>
-</blockquote>
-<p><strong>First step</strong> reset the branch to the parent of the current commit.<br><strong>Second step</strong> force-push it to the remote.</p>
+<p>Apparently we need to build libc++: by running  <code>ninja cxx</code> other wise we get some header errors.</p>
+<h3 id="Running-LLVM-Clang-Static-Analyzer"><a href="#Running-LLVM-Clang-Static-Analyzer" class="headerlink" title="Running LLVM-Clang Static Analyzer"></a>Running LLVM-Clang Static Analyzer</h3><p>To run a static analyzer on <code>test.cpp</code> file, we can use <code>scan-build</code> utility with below command.<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ROOT/llvm-project/clang/tools/scan-build/bin/scan-build -k -V \</div><div class="line">    --use-analyzer $ROOT/llvm-project/build/bin/clang -o . clang -c ./test.cpp</div></pre></td></tr></table></figure></p>
+<p><strong>Options</strong></p>
+<ul>
+<li><code>-V</code> option it will open the report in the browser</li>
+<li><code>-k</code> keep on going option</li>
+<li><code>c</code>  Only run preprocess, compile, and assemble steps</li>
+</ul>
+<p><img src="/2020/06/02/build-llvm/report.png" alt="alt text" title="Report"></p>
+<p>Or we can use it via <code>clang</code> to run a specific check. Here for example <code>NullDereference</code><br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ROOT/llvm-project/build/bin/clang++ -cc1 -analyze -analyzer-checker=core.NullDereference test.cpp</div></pre></td></tr></table></figure></p>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>Full build took around 2.5 hours in my machine.<br>Building after a small change took around 1 minute.</p>
 <hr>
-<p><a href="http://christoph.ruegg.name/blog/git-howto-revert-a-commit-already-pushed-to-a-remote-reposit.html" target="_blank" rel="external">More Details: Revert a commit already pushed to a remote repository -Christoph Rüegg</a></p>
+<ul>
+<li><a href="https://quuxplusone.github.io/blog/2019/11/09/llvm-from-scratch/" target="_blank" rel="external">How to build LLVM from source</a></li>
+</ul>
 
 
                 <hr>
@@ -208,13 +218,9 @@
 
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2016/06/06/Script/" data-toggle="tooltip" data-placement="top" title="Stand Up Script">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2016/05/29/hello-2015/" data-toggle="tooltip" data-placement="top" title="Welcome to My Blog">Next Post &rarr;</a>
+                            <a href="/2020/06/02/GSoC-2020/" data-toggle="tooltip" data-placement="top" title="GSoC 2020 - Find null smart pointer dereferences with the LLVM-Clang Static Analyzer">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -261,9 +267,11 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                          <a class="tag" href="/tags/#LLVM" title="LLVM">LLVM</a>
                         
-                          <a class="tag" href="/tags/#Version Control" title="Version Control">Version Control</a>
+                          <a class="tag" href="/tags/#Clang" title="Clang">Clang</a>
+                        
+                          <a class="tag" href="/tags/#Static-Analysis" title="Static-Analysis">Static-Analysis</a>
                         
                     </div>
                 </section>
@@ -284,8 +292,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "vrnithinkumar";
-    var disqus_identifier = "http://vrnithinkumar.github.io/2016/05/30/Revert-A-Commit/";
-    var disqus_url = "http://vrnithinkumar.github.io/2016/05/30/Revert-A-Commit/";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2020/06/02/build-llvm/";
+    var disqus_url = "http://vrnithinkumar.github.io/2020/06/02/build-llvm/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
