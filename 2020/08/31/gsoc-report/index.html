@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Blog maintained by Nithin about his programming experiments.">
+    <meta name="keyword"  content="Progarmming, Coding, computer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Find null smart pointer dereferences with the Clang Static Analyzer[GSoC2020] - Sharing Some Bits | VR&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://vrnithinkumar.github.io/2020/08/31/gsoc-report/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Sharing Some Bits.</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://vrnithinkumar.github.io/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('llvm.png')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#LLVM" title="LLVM">LLVM</a>
+                        
+                          <a class="tag" href="/tags/#Clang" title="Clang">Clang</a>
+                        
+                          <a class="tag" href="/tags/#Static-Analysis" title="Static-Analysis">Static-Analysis</a>
+                        
+                          <a class="tag" href="/tags/#GSoC2020" title="GSoC2020">GSoC2020</a>
+                        
+                    </div>
+                    <h1>Find null smart pointer dereferences with the Clang Static Analyzer[GSoC2020]</h1>
+                    <h2 class="subheading">Final Report-Google Summer of Code 2020</h2>
+                    <span class="meta">
+                        Posted by Nithin on
+                        2020-08-31
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <ul>
+<li>My GSoC work on GitHub: <a href="https://github.com/llvm/llvm-project/search?q=author%3Avrnithinkumar+author-date%3A2020-06-01..2020-08-31&amp;unscoped_q=author%3Avrnithinkumar+author-date%3A2020-06-01..2020-08-31&amp;type=Commits" target="_blank" rel="external">Commits</a><br>(Maybe the link changes, if that is the case please search for: “[author:vrnithinkumar author-date:2020-06-01..2020-08-31]” in the repository of the LLVM project)</li>
+<li>My GSoC work on Phabricator: <a href="https://reviews.llvm.org/differential/query/UwCbJYKaRcDb/" target="_blank" rel="external">Reviews</a></li>
+<li><a href="https://docs.google.com/document/d/1WZSt45kZUhg0UbOv0HXBhyEYaHrb-G-TpEhj_nU041Q/edit?usp=sharing" target="_blank" rel="external">Original report link</a><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2>The <a href="https://clang-analyzer.llvm.org/" target="_blank" rel="external">Clang Static Analyzer</a> is used to find bugs in the program by analyzing source code without compiling and executing. It uses symbolic computations to find the defects. Analyzer covers a variety of checks targeted at finding security and API usage bugs, dead code, null dereference, division by zero, and other logic errors. The Clang Static Analyzer already has a checker to find the null pointer dereference in code, however it is not sufficient for higher abstractions such as C++ smart pointers or optionals. By explicitly teaching the C++ standard class behaviors we can make the Analyzer to find more bugs related to modern C++ code.<h2 id="Goal"><a href="#Goal" class="headerlink" title="Goal"></a>Goal</h2>Enable Clang Static Analyzer to find the occurrences of null smart pointer dereferences by teaching the observed behaviors of C++ smart pointer classes. Improve the analyzer’s ability to realize the values of the standard smart pointers without having to dig deep into the complex implementation details. We should be able to find more null dereference bugs related to the smart pointers while reducing the number of false positives. Should be able to cover at least one class fully eg. <code>std::unique_ptr</code>, and then extend it to <code>std::shared_ptr</code> or the <code>std::optional</code> if time permits. <h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2>Within the GSoC time period, we could not implement the modeling for all smart pointer methods and operators as we planned. Since the problem was more complicated than what we all anticipated. So far the majority of the modeling for std::unique_ptr is  implemented and committed. We were able to find some promising results with that. We found <strong>8</strong> true positive warnings related to smart pointer null dereference in <a href="https://github.com/llvm/llvm-project" target="_blank" rel="external">LLVM</a> project and <strong>5</strong> warnings in the <a href="https://webkit.org/" target="_blank" rel="external">WebKit</a> project. Even though we were only able to support <code>std::unique_ptr</code> so far, we accomplished to build a base modeling for the smart pointer checkers. And this will act as a consolidated foundation for developing checkers for any C++ objects that are passed by value. That is one of the first conscious attempts to do so and we’ve gained a lot of experience and managed to maintain our integrity - in the sense that the code ended up mostly free of hacks. It could most likely be generalized to modeling the entire C++ standard library. This does not give us the high-level architecture that’ll be needed to deal with the scale of the standard library, but we got our low-level basics right. Also this work will be used to add support for checking other smart pointers <code>std::shard_ptr</code>, <code>std::weak_ptr</code> as well as <code>std::optionals</code>. Also it can be used to build a checker for use-after-free errors. <h2 id="Research"><a href="#Research" class="headerlink" title="Research"></a>Research</h2><h3 id="Smart-Pointer"><a href="#Smart-Pointer" class="headerlink" title="Smart Pointer"></a>Smart Pointer</h3>A Smart pointer is an abstract data type that simulates a pointer with additional automatic memory management. It manages a dynamically allocated object and ensures the dynamically allocated object is properly cleaned up. Such features are intended to reduce bugs caused by the misuse of pointers while retaining efficiency. Smart pointers typically keep track of the memory they point to, and may also be used to manage other resources, such as network connections and file handles.<h3 id="Unique-Pointer"><a href="#Unique-Pointer" class="headerlink" title="Unique Pointer"></a>Unique Pointer</h3>A <code>unique_ptr</code> is a smart pointer that owns and manages another object through a pointer and disposes that object when the <code>unique_ptr</code> goes out of scope. It should be used to own and manage any dynamically allocated object when its ownership is not shared. A <code>unique_ptr</code> explicitly prevents copying of its contained pointer (as would happen with the normal assignment), but the move assignment and move constructor can be used to transfer ownership of the contained pointer to another <code>unique_ptr</code>.</li>
+</ul>
+<p><strong>Example: 1 Dereferencing default-constructed unique pointer which is null</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">(<span class="keyword">bool</span> flag)</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x; <span class="comment">// note: Default constructed unique pointer is null</span></div><div class="line">  <span class="keyword">if</span> (flag) <span class="comment">// note: Assuming 'flag' is false;</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// note: Taking false branch</span></div><div class="line"></div><div class="line">  <span class="keyword">return</span> *x;  <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>Example: 2 Dereferencing a unique pointer after calling release()</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bar</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">42</span>)) ;  <span class="comment">// valid unique pointer;</span></div><div class="line">  x.release(); <span class="comment">// note: smart pointer 'x' become null and the ownership of </span></div><div class="line">               <span class="comment">// the memory is not transferred. And it causes a memory leak </span></div><div class="line">               <span class="comment">// which should be warned.</span></div><div class="line">  <span class="keyword">return</span> *x;   <span class="comment">// warning: Dereferenced smart pointer 'x' is null. </span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Similar to above cases, other possible cases are dereferencing after calling <code>std::move()</code>, <code>reset()</code> or <code>reset(nullptr)</code>, getting and explicitly deleting inner pointer, or swapping with null pointer using <code>std::swap</code> (<a href="/2020/08/31/gsoc-report/#Appendix">more examples in Appendix</a>). Above all cases will result in a crash.</p>
+<h2 id="Design"><a href="#Design" class="headerlink" title="Design"></a>Design</h2><p>The basic idea of the checker is to keep a record of raw pointers wrapped inside the smart pointers using a map between smart pointer and corresponding inner pointer. Update the map by enumerating all situations when the smart pointer becomes null, as well as the situations when the smart pointer becomes non-null. For example when a smart pointer is default constructed track that smart pointer as it has a null inner pointer. Then check if any of the tracked pointers dereferenced has a null value. To make the bug report more clear attach additional details along the bug path to provide more detailed information on where the smart pointer becomes null.</p>
+<h2 id="Alternative-Solution-Considered"><a href="#Alternative-Solution-Considered" class="headerlink" title="Alternative Solution Considered"></a>Alternative Solution Considered</h2><p>Another possible solution considered was manipulating symbolic values inside the smart pointer. The limitation that we run into here is that our memory model (“RegionStore”) doesn’t currently allow setting a “default” binding to a whole object when it’s a part (say, a field) of a bigger object. This means that we have to understand how the smart pointer works internally (which field corresponds to what) to manipulate its symbolic value, which ties us to a specific implementation of the C++ standard library. This might still work for a unique pointer which probably always has exactly one field, but for shared pointers it is not the case and has multiple fields. So it depends on the different implementations of the C++ standard library. It has been decided to not go with this approach since this approach is challenging and potentially a lot of work compared to the first approach.</p>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><h3 id="Initial-Smart-Pointer-Modeling-and-Checker"><a href="#Initial-Smart-Pointer-Modeling-and-Checker" class="headerlink" title="Initial Smart Pointer Modeling and Checker"></a>Initial Smart Pointer Modeling and Checker</h3><p><a href="https://reviews.llvm.org/D81315" target="_blank" rel="external">D81315</a>: Created a basic implementation. </p>
+<ul>
+<li>Made a separate checker class for emitting diagnostics. Used the new checker to use <code>checkPreCall</code> and put bug reporting logic there.</li>
+<li>Kept all smart pointer related modeling logic in <code>SmartPtrModeling</code>. Shared common functionality via a header file shared between the <code>SmartPtrModeling</code> and <code>SmartPtrChecker</code>. </li>
+<li>Made a <code>SmartPtrModeling</code> as a dependency to <code>SmartPtrChecker</code>.</li>
+<li>Introduced a GDM with <code>MemRegion</code> as key and SVal as value to track the smart pointer and corresponding inner pointer.  </li>
+<li>Also added support to model <code>unique_ptr</code> constructor, release and reset methods.</li>
+<li>Used <code>evalCall</code> to handle modeling. As part of this enabled constructor support in <code>evalCall</code> event with <a href="https://reviews.llvm.org/D82256" target="_blank" rel="external">D82256</a>. </li>
+<li>Implemented <code>checkDeadSymbols</code> to clean up the <code>MemRegion</code> of smart pointers from the program state map when they go out of scope. Keeping the data structures in the program state as minimal as possible so that it would not grow to a great size while analyzing real code and eventually slows down the analysis.</li>
+</ul>
+<p>With this patch, the model can emit warnings for cases like use after default constructor, use after release, or use after the reset with a null pointer. Kept the <code>SmartPtrChecker</code> under <em>alpha.cplusplus</em> package and smart pointer modeling have to be enabled by the <code>ModelSmartPtrDereference</code> flag.</p>
+<h3 id="checkRegionChanges-for-SmartPtrModeling"><a href="#checkRegionChanges-for-SmartPtrModeling" class="headerlink" title="checkRegionChanges for SmartPtrModeling"></a>checkRegionChanges for SmartPtrModeling</h3><p><a href="https://reviews.llvm.org/D83836" target="_blank" rel="external">D83836</a>: Implemented checkRegionChanges for <code>SmartPtrModeling</code>. To improve the accuracy, when a smart pointer is passed by a non-const reference into a function, removed the tracked region data. Since it is not sure what happens to the smart pointer inside the function.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; P; <span class="comment">// note: Default constructed unique pointer is null</span></div><div class="line">  bar(&amp;P); <span class="comment">// note: Passing by reference</span></div><div class="line">  <span class="keyword">return</span> *P; <span class="comment">// No warnings</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>For example here in the code above, we are passing a default constructed <code>unique_ptr</code> ‘P’ to method <code>bar()</code>. But it is unknown whether the <code>unique_ptr</code> ‘P’ is reset with a valid inner pointer or not inside <code>bar()</code>. To avoid false positives we are not producing any warning on dereference of <code>unique_ptr</code> ‘P’ after <code>bar()</code>.</p>
+<h3 id="Modeling-for-unique-ptr-swap-method"><a href="#Modeling-for-unique-ptr-swap-method" class="headerlink" title="Modeling for unique_ptr::swap method"></a>Modeling for unique_ptr::swap method</h3><p><a href="https://reviews.llvm.org/D83877" target="_blank" rel="external">D83877</a>: Enabled the <code>SmartPtrModeling</code> to handle the swap method for <code>unique_ptr</code>. The <code>swap()</code> method can be used to exchange ownership of inner pointers between the <code>unique_ptrs</code>. So it is possible to make a <code>unique_ptr</code> null by swapping with another null <code>unique_ptr</code>. With this patch warnings are emitted when a <code>unique_ptr</code> is used after swapping with another <code>unique_ptr</code> with null as an inner pointer.</p>
+<h3 id="NoteTag-for-better-reporting"><a href="#NoteTag-for-better-reporting" class="headerlink" title="NoteTag for better reporting"></a>NoteTag for better reporting</h3><p><a href="https://reviews.llvm.org/D84600" target="_blank" rel="external">D84600</a>: With NoteTags added more detailed information on where the smart pointer becomes null in the bug path. Introduced a <code>getNullDereferenceBugType()</code> inter-checker API to check if the bug type is interesting.<br><em>After adding NoteTags:</em><br><img src="/2020/08/31/gsoc-report/notetag.png" alt="alt text" title="NoteTags"></p>
+<h2 id="Modeling-for-unque-ptr-get"><a href="#Modeling-for-unque-ptr-get" class="headerlink" title="Modeling for unque_ptr::get()"></a>Modeling for unque_ptr::get()</h2><p><a href="https://reviews.llvm.org/D86029" target="_blank" rel="external">D86029</a>: Modeled to return tracked inner pointer for the <code>get()</code> method. The <code>get()</code> method is used to access the inner pointer. When the inner pointer is used with conditional branching or other symbol constraining methods we can use the constraints on the inner pointer to find whether the corresponding <code>unique_ptr</code> is null or not. When the inner pointer value for a <code>unique_ptr</code> is available from the tracked map we bind that value to the return value of <code>get()</code> method. Also made changes to create <code>conjureSymbolVal</code> in case of missing inner pointer value for a <code>unique_ptr</code> region we are tracking.<br><em>Example:</em><br><img src="/2020/08/31/gsoc-report/get.png" alt="alt text" title="Get"></p>
+<h3 id="Modeling-for-unique-ptr-bool-conversion"><a href="#Modeling-for-unique-ptr-bool-conversion" class="headerlink" title="Modeling for unique_ptr bool conversion"></a>Modeling for unique_ptr bool conversion</h3><p><a href="https://reviews.llvm.org/D86027" target="_blank" rel="external">D86027</a>: Modeling the case where <code>unique_ptr</code> is explicitly converted to bool. It is a common practice to check if a <code>unique_ptr</code> is null or not before accessing it. If the inner pointer value is already tracked and we know the value, we can figure out the corresponding boolean value. And the analyzer will take the branch based on that. Using <code>SValBuilder::conjureSymbolVal</code> to create a symbol when there is no symbol tracked yet and we constrain on that symbol to split the Exploded Graph with assuming null and non-null value.</p>
+<h3 id="Adding-support-for-checkLiveSymbols"><a href="#Adding-support-for-checkLiveSymbols" class="headerlink" title="Adding support for checkLiveSymbols"></a>Adding support for <code>checkLiveSymbols</code></h3><p><a href="https://reviews.llvm.org/D86027" target="_blank" rel="external">D86027</a>: Implemented <code>checkLiveSymbols</code> to make sure that we are keeping the symbol alive until the corresponding owner <code>unique_ptr</code> is alive to avoid removing the constraints related to that symbol. Also when the <code>unique_ptr</code> goes out of scope, we make sure the symbols are cleaned up.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> *RP = <span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">12</span>);</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; P(RP);</div><div class="line">    <span class="keyword">if</span> (P) &#123; <span class="comment">// Takes true branch</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>For example here in the code above, we have to keep the symbol for <code>RP</code> alive since that is tracked as the inner pointer value of <code>unique_ptr</code> P. We have to use the constraints on that symbol to decide whether the branching takes the true or false branch. </p>
+<h3 id="Modeling-of-move-assignment-operator-unique-ptr-operator"><a href="#Modeling-of-move-assignment-operator-unique-ptr-operator" class="headerlink" title="Modeling of move assignment operator (unique_ptr::operator=)"></a>Modeling of move assignment operator (unique_ptr::operator=)</h3><p><a href="https://reviews.llvm.org/D86293" target="_blank" rel="external">D86293</a>: Modeled how the unique_ptr moves the ownership of its managed memory to another <code>unique_ptr</code> via <code>=</code> operator. With the move assignment operator a <code>unique_ptr</code> can be reset with another <code>unique_ptr</code> whereas the assigned <code>unique_ptr</code> will lose its ownership of its inner pointer and become null. Also it is possible to assign <code>nullptr</code> to a <code>unique_ptr</code> and reset it to null. Made changes to update the tracked values of both LHS and RHS side <code>unique_ptr</code> values of the operator.</p>
+<h3 id="Modeling-for-unique-ptr-move-constructor"><a href="#Modeling-for-unique-ptr-move-constructor" class="headerlink" title="Modeling for unique_ptr move constructor"></a>Modeling for unique_ptr move constructor</h3><p><a href="https://reviews.llvm.org/D86373" target="_blank" rel="external">D86373</a>: Similar to the <code>=</code> operator, modeled how the <code>unique_ptr</code> moves the ownership of its managed memory to another via move constructor. Then tracked the moved unique_ptr’s inner pointer value as null.</p>
+<h2 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h2><p>The checker has been evaluated on a number of open-source software projects which use smart pointers extensively(<a href="https://github.com/symengine/symengine" target="_blank" rel="external">symengine</a>, <a href="https://github.com/oatpp/oatpp" target="_blank" rel="external">oatpp</a>, <a href="https://github.com/facebook/zstd" target="_blank" rel="external">zstd</a>, <a href="https://github.com/simbody/simbody" target="_blank" rel="external">simbody</a>, <a href="https://github.com/cwida/duckdb" target="_blank" rel="external">duckdb</a>, <a href="https://github.com/an-tao/drogon" target="_blank" rel="external">drogon</a>, <a href="https://github.com/fmtlib/fmt" target="_blank" rel="external">fmt</a>, <a href="https://github.com/google/re2" target="_blank" rel="external">re2</a>, <a href="https://github.com/danmar/cppcheck" target="_blank" rel="external">cppcheck</a>, <a href="https://github.com/facebookresearch/faiss" target="_blank" rel="external">faiss</a>). Unfortunately(or fortunately) the checker did not produce any warnings which are not false positive. But we found <strong>8</strong> true positive warnings related to smart pointer null dereference in <a href="https://github.com/llvm/llvm-project" target="_blank" rel="external">LLVM</a> project and <strong>5</strong> warnings in the <a href="https://webkit.org/" target="_blank" rel="external">WebKit</a> project.</p>
+<p><em>(Attaching few example warnings)</em><br><strong>Warnings in LLVM</strong><br><em>Warning-1: clang/lib/Analysis/Consumed.cpp</em><br><img src="/2020/08/31/gsoc-report/llvm_1.png" alt="alt text" title="LLVM Warning-1"><br><em>Warning-2: clang/lib/Lex/Preprocessor.cpp</em><br><img src="/2020/08/31/gsoc-report/llvm_2.png" alt="alt text" title="LLVM Warning-2"><br><em>Warning-3: llvm/utils/TableGen/OptParserEmitter.cpp</em><br><img src="/2020/08/31/gsoc-report/llvm_3.png" alt="alt text" title="LLVM Warning-3"><br><strong>Warnings in WebKit</strong><br><em>Warning-1:</em><br><img src="/2020/08/31/gsoc-report/wk_1.png" alt="alt text" title="WebKit Warning-1"><br><em>Warning-2:</em><br><img src="/2020/08/31/gsoc-report/wk_2.png" alt="alt text" title="WebKit Warning-2"><br><em>Warning-3:</em><br><img src="/2020/08/31/gsoc-report/wk_3.png" alt="alt text" title="WebKit Warning-3"><br><em>Warning-4:</em><br><img src="/2020/08/31/gsoc-report/wk_4.png" alt="alt text" title="WebKit Warning-4"></p>
+<h2 id="Future-Work"><a href="#Future-Work" class="headerlink" title="Future Work"></a>Future Work</h2><h3 id="Model-remaining-methods-of-unique-ptr"><a href="#Model-remaining-methods-of-unique-ptr" class="headerlink" title="Model remaining methods of unique_ptr"></a>Model remaining methods of unique_ptr</h3><p>So far we covered the important methods related to <code>unique_ptr</code>, but still there exist few more methods and operators on <code>unique_ptr</code> to cover. Remaining methods are <code>std::make_unique</code>, <code>std::make_unique_for_overwrite</code>, and <code>std::swap</code>. Remaining operators include <code>operator*</code>, <code>operator-&gt;</code>, and all the comparison operators.</p>
+<h3 id="Model-other-smart-pointers"><a href="#Model-other-smart-pointers" class="headerlink" title="Model other smart pointers"></a>Model other smart pointers</h3><p>Extend the modeling for <code>std::shared_ptr</code>, <code>std::weak_ptr</code> and <code>std::optional</code>. Right now <code>SmartPtrModeling</code> only models most of the <code>std::unique_ptr</code>, adding modeling for other smart pointers will make the checker complete.</p>
+<h3 id="CallDescriptionMap-support-for-CXX-Constructor-and-Operator"><a href="#CallDescriptionMap-support-for-CXX-Constructor-and-Operator" class="headerlink" title="CallDescriptionMap support for CXX Constructor and Operator"></a>CallDescriptionMap support for CXX Constructor and Operator</h3><p>To enable the checker by default we have to use <code>CallDescriptionMap</code> for <code>evalCall</code>. Right now we are manually implementing the name matching logic that has been already implemented in <code>CallDescriptionMap</code>. But the support for the <em>Constructor</em> and <em>Operator</em> calls are not supported yet and changes are in review(<a href="https://reviews.llvm.org/D81059" target="_blank" rel="external">D81059</a>, <a href="https://reviews.llvm.org/D80503" target="_blank" rel="external">D80503</a>) by <a href="https://reviews.llvm.org/p/Charusso" target="_blank" rel="external">Charusso</a>.</p>
+<h3 id="Enabling-the-checker-by-default"><a href="#Enabling-the-checker-by-default" class="headerlink" title="Enabling the checker by default"></a>Enabling the checker by default</h3><p>The SmartPtrChecker is under the <em>alpha.cplusplus</em> package and smart pointer modeling has to be enabled by the <code>ModelSmartPtrDereference</code> flag. Enabling the checker by default will benefit codebases that use smart pointers. </p>
+<h3 id="Inlined-defensive-checks"><a href="#Inlined-defensive-checks" class="headerlink" title="Inlined defensive checks"></a>Inlined defensive checks</h3><p>We are using <code>trackExpressionValue()</code> to track how an inner pointer expression for a unique_ptr is getting null in the bug report. The <code>trackExpressionValue()</code> is suppressing some warnings to avoid the false positives with inlined defensive checks.</p>
+<p>For example the code below is a true positive warning.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; P)</span> </span>&#123;</div><div class="line">  <span class="keyword">if</span> (P) &#123;&#125; <span class="comment">// Assuming P is null.</span></div><div class="line">  <span class="keyword">return</span> *P; <span class="comment">// warning: null dereference</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>On the other hand, the code below is a false positive warning. We cannot infer <code>unique_ptr</code> Q is null in <code>bar()</code> based on the check <code>if(P)</code> in function call <code>foo()</code>. So the warning should be suppressed.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; P)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (P) &#123;&#125; <span class="comment">// Assuming P is null</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">bar</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; Q)</span> </span>&#123;</div><div class="line">    foo(Q);</div><div class="line">    <span class="keyword">return</span> *Q; <span class="comment">// warning: null dereference</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Right now we are trusting <code>trackExpressionValue()</code> when it suppresses reports. It may occasionally suppress true positive warnings, but it’s better than having false positives. </p>
+<p>Below code is an example for a suppressed true positive warning.<br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> *<span class="title">return_null</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="literal">nullptr</span>;&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x(return_null());</div><div class="line">  <span class="keyword">return</span> *x; <span class="comment">// no-warning</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>We have to investigate more on real world projects and see <code>trackExpressionValue()</code> is sufficient for suppressing all false positive warnings related to inlined defensive checks.</p>
+<h3 id="Marking-regions-as-not-interesting"><a href="#Marking-regions-as-not-interesting" class="headerlink" title="Marking regions as not interesting"></a>Marking regions as not interesting</h3><p>Right now there is no API similar to <code>markInteresting()</code> for marking the region not interesting in a bug report. With this support, our checker can remove less useful and unwanted notes showing in the report. For example, when a <code>unique_ptr</code> is referenced after the <code>release()</code> we don’t have to show a note tag on the <code>unique_ptr</code> constructor unless it is constructed with null.</p>
+<p><em>Before:</em><br><img src="/2020/08/31/gsoc-report/ntbefore.png" alt="alt text" title="Before marking not interesting"><br><em>After: marking P not interesting</em><br><img src="/2020/08/31/gsoc-report/ntafter.png" alt="alt text" title="After marking not interesting"></p>
+<h3 id="Communication-with-MallocChecker"><a href="#Communication-with-MallocChecker" class="headerlink" title="Communication with MallocChecker"></a>Communication with MallocChecker</h3><p>When raw pointers are accessed from <code>unique_ptr</code> via <code>get()</code> or <code>release()</code>, we have to ensure that the raw pointers are tracked via <code>MallocChecker</code>. Also, enable SmartPtrModeling to communicate the deallocation to <code>MallocChecker</code> when we see the destructor call of the <code>unique_ptr</code> and it has a default deleter. Also, communicating with <code>MallocChecker</code> could potentially find double-free errors when the same pointer is passed to multiple unique_ptrs or it is also freed independently of the <code>unique_ptr</code> (<a href="/2020/08/31/gsoc-report/#Double-free-error-example">example</a>).</p>
+<h3 id="Add-modeling-for-user-defined-custom-smart-pointers"><a href="#Add-modeling-for-user-defined-custom-smart-pointers" class="headerlink" title="Add modeling for user-defined custom smart pointers"></a>Add modeling for user-defined custom smart pointers</h3><p>Many C++ projects have their own custom implementations of smart pointers similar to <a href="https://www.boost.org/doc/libs/1_61_0/libs/smart_ptr/shared_ptr.htm" target="_blank" rel="external">boost::shared_ptr</a> or <a href="https://llvm.org/doxygen/classllvm_1_1IntrusiveRefCntPtr.html" target="_blank" rel="external">llvm::IntrusiveRefCntPtr</a>. If the user can specify the custom smart pointers and methods on it, we could reuse the existing SmartPtrModeling for modeling and checking the custom smart pointers.</p>
+<h2 id="How-to-use"><a href="#How-to-use" class="headerlink" title="How to use"></a>How to use</h2><p>All the changes are in the master. But the checker and modeling are not enabled by default. Checker is under the <em>alpha.cplusplus</em> package and smart pointer modeling has to be enabled by the <code>ModelSmartPtrDereference</code> flag. </p>
+<p><strong>Checker and modeling can be enabled explicitly:</strong><br><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="variable">$scan</span>-build -<span class="built_in">enable</span>-checker alpha.cplusplus.SmartPtr -analyzer-config cplusplus.SmartPtrModeling:ModelSmartPtrDereference=<span class="literal">true</span> clang -c test.cpp</div></pre></td></tr></table></figure></p>
+<p>(Since <code>SmartPtrChecker</code> is depended to <code>SmartPtrModeling</code> we don’t have to explicitly enable <code>SmartPtrModeling</code>)</p>
+<h2 id="Acknowledgment"><a href="#Acknowledgment" class="headerlink" title="Acknowledgment"></a>Acknowledgment</h2><p>I want to express my gratitude towards everyone that helped me with this project, but especially to 3 individuals: My mentors, <a href="https://github.com/haoNoQ" target="_blank" rel="external">Artem Dergachev</a>, <a href="https://github.com/Xazax-hun" target="_blank" rel="external">Gábor Horváth</a>, and <a href="https://github.com/SavchenkoValeriy" target="_blank" rel="external">Valeriy Savchenko</a>. With their guidance, I’ve learned a lot about how Clang Static Analyzer works during the summer. I got to skype with them every Monday and received all the help and suggestions. When I got stuck with issues I got immediate help even on the weekends. Also, I received very fast feedback for my review requests. I am also thankful to <a href="https://reviews.llvm.org/p/Szelethus/" target="_blank" rel="external">Kristóf Umann</a> for tips and comments on the reviews.</p>
+<p>Thank you very much for the support and mentoring.</p>
+<h2 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h2><h3 id="Potential-bugs-with-unique-ptr"><a href="#Potential-bugs-with-unique-ptr" class="headerlink" title="Potential bugs with unique_ptr"></a>Potential bugs with unique_ptr</h3><p><strong>A default constructed unique pointer has null value</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x; <span class="comment">// note: Default constructor produces a null unique pointer</span></div><div class="line">    <span class="keyword">return</span> *x; <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>Unique pointer constructed with null value</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x(<span class="literal">nullptr</span>);  <span class="comment">// note: Default constructor produces a null unique pointer</span></div><div class="line">    <span class="keyword">return</span> *x;  <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>Unique pointer constructed with move constructor</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; y(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">13</span>));  </div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x(<span class="built_in">std</span>::move(y)); <span class="comment">// note: unique_ptr y is moved to x</span></div><div class="line">    <span class="keyword">return</span> *y; <span class="comment">// warning: Dereferenced smart pointer 'y' is null.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>release</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">13</span>));  </div><div class="line">    x.release(); <span class="comment">// note: unique_ptr x is null after release</span></div><div class="line">    <span class="keyword">return</span> *x; <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>reset</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">13</span>));  </div><div class="line">    x.reset(<span class="literal">nullptr</span>); <span class="comment">// note: unique_ptr x is null after reset to null</span></div><div class="line">    <span class="keyword">return</span> *x;  <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>swap</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">13</span>));</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; y; </div><div class="line">    x.swap(y); <span class="comment">// note: x is null after swapping with null y</span></div><div class="line">    <span class="keyword">return</span> *x; <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>get</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x;</div><div class="line">    <span class="keyword">if</span>(!x.get())</div><div class="line">        <span class="keyword">return</span> *x; <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>operator bool</strong><br><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;<span class="keyword">int</span>&gt; x;</div><div class="line">    <span class="keyword">if</span>(!x)</div><div class="line">        <span class="keyword">return</span> *x; <span class="comment">// warning: Dereferenced smart pointer 'x' is null.</span></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="Double-free-error-example"><a href="#Double-free-error-example" class="headerlink" title="Double-free error example"></a>Double-free error example</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> *i = <span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">42</span>);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p1(i);</div><div class="line">  <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p2(i); <span class="comment">// When p2 goes out of scope it will try </span></div><div class="line">  to <span class="keyword">delete</span> the inner pointer which is already deleted by p1.</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/06/02/build-llvm/" data-toggle="tooltip" data-placement="top" title="Building and Running LLVM-Clang Static Analyzer">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#LLVM" title="LLVM">LLVM</a>
+                        
+                          <a class="tag" href="/tags/#Clang" title="Clang">Clang</a>
+                        
+                          <a class="tag" href="/tags/#Static-Analysis" title="Static-Analysis">Static-Analysis</a>
+                        
+                          <a class="tag" href="/tags/#GSoC2020" title="GSoC2020">GSoC2020</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "vrnithinkumar";
+    var disqus_identifier = "http://vrnithinkumar.github.io/2020/08/31/gsoc-report/";
+    var disqus_url = "http://vrnithinkumar.github.io/2020/08/31/gsoc-report/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/VR_nithin">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/vrnithinkumar">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/vrnithinkumar">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/vrnithinkumar">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Sharing Some Bits. 2020 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://vrnithinkumar.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;    
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://vrnithinkumar.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

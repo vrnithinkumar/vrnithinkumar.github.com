@@ -195,7 +195,7 @@
 <li>8 GB Memory<h3 id="Get-the-source-code"><a href="#Get-the-source-code" class="headerlink" title="Get the source code"></a>Get the source code</h3><code>git clone https://github.com/llvm/llvm-project.git</code><h3 id="Build-the-code-I-am-using-ninja-to-build"><a href="#Build-the-code-I-am-using-ninja-to-build" class="headerlink" title="Build the code (I am using ninja to build)"></a>Build the code (I am using ninja to build)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">mkdir $ROOT/llvm-project/build</div><div class="line">cd $ROOT/llvm-project/build</div><div class="line">cmake -G Ninja \</div><div class="line">    -DDEFAULT_SYSROOT=&quot;$(xcrun --show-sdk-path)&quot; \</div><div class="line">    -DLLVM_ENABLE_PROJECTS=&quot;clang;libcxx;libcxxabi&quot; \</div><div class="line">    -DCMAKE_BUILD_TYPE=Release ../llvm</div><div class="line">ninja clang</div><div class="line">ninja cxx</div></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>Apparently we need to build libc++: by running  <code>ninja cxx</code> other wise we get some header errors.</p>
+<p>Apparently we need to build libc++: by running <code>ninja cxx</code> other wise we get some header errors.</p>
 <h3 id="Running-LLVM-Clang-Static-Analyzer"><a href="#Running-LLVM-Clang-Static-Analyzer" class="headerlink" title="Running LLVM-Clang Static Analyzer"></a>Running LLVM-Clang Static Analyzer</h3><p>To run a static analyzer on <code>test.cpp</code> file, we can use <code>scan-build</code> utility with below command.<br><figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ROOT/llvm-project/clang/tools/scan-build/bin/scan-build -k -V \</div><div class="line">    --use-analyzer $ROOT/llvm-project/build/bin/clang -o . clang -c ./test.cpp</div></pre></td></tr></table></figure></p>
 <p><strong>Options</strong></p>
 <ul>
@@ -217,6 +217,10 @@
                 
 
                 <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/08/31/gsoc-report/" data-toggle="tooltip" data-placement="top" title="Find null smart pointer dereferences with the Clang Static Analyzer[GSoC2020]">&larr; Previous Post</a>
+                        </li>
                     
                     
                         <li class="next">
